@@ -94,7 +94,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 px-3 py-5 flex flex-col gap-1 overflow-y-auto" x-data="{ productsOpen: false }">
+    <nav class="flex-1 px-3 py-5 flex flex-col gap-1" x-data="{ productsOpen: false }">
       <div class="text-gold/30 text-[9px] tracking-[0.25em] uppercase px-3 mb-2">Menu</div>
 
       <a href="{{ route('admin.dashboard') }}" class="nav-item active">
