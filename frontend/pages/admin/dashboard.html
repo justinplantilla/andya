@@ -1,12 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Dashboard</title>
-    <link rel="stylesheet" href="../../css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Dashboard</title>
+  <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="bg-gray-100">
-    <script src="../../js/main.js"></script>
+
+  <script src="../../js/sidebar.js"></script>
+  <script>loadSidebar('dashboard.html');</script>
+
+  <script>
+    document.getElementById('main-content').innerHTML = `
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div class="bg-indigo-100 text-indigo-600 rounded-full p-3 text-2xl">📦</div>
+          <div>
+            <p class="text-sm text-gray-500">Total Products</p>
+            <p class="text-2xl font-bold text-gray-800">0</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div class="bg-green-100 text-green-600 rounded-full p-3 text-2xl">🛒</div>
+          <div>
+            <p class="text-sm text-gray-500">Total Orders</p>
+            <p class="text-2xl font-bold text-gray-800">0</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div class="bg-yellow-100 text-yellow-600 rounded-full p-3 text-2xl">💳</div>
+          <div>
+            <p class="text-sm text-gray-500">Transactions</p>
+            <p class="text-2xl font-bold text-gray-800">0</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4">
+          <div class="bg-pink-100 text-pink-600 rounded-full p-3 text-2xl">👥</div>
+          <div>
+            <p class="text-sm text-gray-500">Total Users</p>
+            <p class="text-2xl font-bold text-gray-800">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-base font-semibold text-gray-700 mb-4">Recent Orders</h2>
+        <p class="text-sm text-gray-400">No recent orders yet.</p>
+      </div>
+    `;
+  </script>
+
+  <script src="../../js/main.js"></script>
 </body>
 </html>
