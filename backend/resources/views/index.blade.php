@@ -40,21 +40,6 @@
     }
     html { scroll-behavior: smooth; }
 
-    .hero-card {
-      background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(107, 124, 90, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(184, 146, 74, 0.08) 0%, transparent 50%),
-        linear-gradient(135deg, #f5f0e8 0%, #ede4d0 100%);
-    }
-    .hero-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234a2e1a' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.5;
-      border-radius: inherit;
-    }
-
     .brand-italic {
       background: linear-gradient(135deg, #8b3a1a 0%, #b8924a 50%, #8b3a1a 100%);
       -webkit-background-clip: text;
@@ -157,51 +142,217 @@
       <a href="#about" data-section="about" class="nav-link text-sm tracking-[0.15em] uppercase font-light transition-colors duration-200 text-cream/70 hover:text-cream">About Us</a>
       <a href="#services" data-section="services" class="nav-link text-sm tracking-[0.15em] uppercase font-light transition-colors duration-200 text-cream/70 hover:text-cream">Services</a>
       <a href="{{ route('login') }}" class="ml-2 px-5 py-2 border border-gold/50 text-gold text-sm tracking-[0.15em] uppercase font-light hover:bg-gold hover:text-bark transition-all duration-300 rounded-sm">Sign In</a>
+      <a href="{{ route('register') }}" class="ml-1 px-5 py-2 bg-gold text-bark text-sm tracking-[0.15em] uppercase font-medium hover:bg-gold-light transition-all duration-300 rounded-sm">Register</a>
     </div>
   </nav>
 
+  <style>
+    .hero-section-bg {
+      background:
+        radial-gradient(ellipse at 10% 60%, rgba(139,58,26,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 20%, rgba(184,146,74,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(107,124,90,0.06) 0%, transparent 60%),
+        linear-gradient(160deg, #f5f0e8 0%, #ede8dc 60%, #e8dfc8 100%);
+    }
+    .hero-visual {
+      background: linear-gradient(145deg, #ede4d0 0%, #e0d4b8 100%);
+      border: 1px solid rgba(184,146,74,0.2);
+    }
+    .float-badge {
+      animation: floatY 3s ease-in-out infinite;
+    }
+    .float-badge-2 {
+      animation: floatY 3.5s ease-in-out 0.5s infinite;
+    }
+    .float-badge-3 {
+      animation: floatY 4s ease-in-out 1s infinite;
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+    .gold-ring {
+      border: 1.5px solid rgba(184,146,74,0.35);
+    }
+    .stat-pill {
+      background: rgba(44,26,14,0.06);
+      border: 1px solid rgba(184,146,74,0.25);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+
   <!-- ───── HERO SECTION ───── -->
-  <section id="hero" class="min-h-screen flex items-center justify-center px-5 pt-14">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-gold/5 blur-3xl"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-rust/5 blur-3xl"></div>
+  <section id="hero" class="hero-section-bg h-screen flex items-center justify-center px-6 md:px-12 pt-16 pb-6 overflow-hidden">
+
+    <!-- bg decorative circles -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-20 -right-20 w-[420px] h-[420px] rounded-full bg-gold/8 blur-3xl"></div>
+      <div class="absolute bottom-0 -left-20 w-[350px] h-[350px] rounded-full bg-rust/6 blur-3xl"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-sage/4 blur-3xl"></div>
     </div>
 
-    <div class="relative hero-card rounded-2xl border border-bark/10 shadow-2xl shadow-bark/15 w-full max-w-2xl px-14 py-16 overflow-hidden">
-      <div class="absolute top-4 left-4 w-5 h-5 border-t border-l border-gold/40"></div>
-      <div class="absolute top-4 right-4 w-5 h-5 border-t border-r border-gold/40"></div>
-      <div class="absolute bottom-4 left-4 w-5 h-5 border-b border-l border-gold/40"></div>
-      <div class="absolute bottom-4 right-4 w-5 h-5 border-b border-r border-gold/40"></div>
+    <div class="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
-      <div class="anim-2 flex justify-center mb-6">
-        <span class="divider-ornament text-gold text-xs tracking-[0.35em] uppercase font-sans font-medium">Mga Likhain ng Pilipinas</span>
+      <!-- LEFT: Text Content -->
+      <div class="flex-1 flex flex-col items-start">
+
+        <div class="anim-2 flex items-center gap-3 mb-7">
+          <div class="h-px w-8 bg-gold/60"></div>
+          <span class="text-gold text-xs tracking-[0.35em] uppercase font-sans font-medium">Mga Likhain ng Pilipinas</span>
+        </div>
+
+        <div class="anim-3 mb-4">
+          <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-light text-bark leading-[1.0] tracking-tight">Andaya's</h1>
+          <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-light italic brand-italic leading-[1.0] tracking-tight">Native</h1>
+          <h1 class="font-display text-6xl md:text-7xl lg:text-8xl font-light text-bark leading-[1.0] tracking-tight">Products</h1>
+        </div>
+
+        <div class="anim-3 flex items-center gap-3 my-4">
+          <div class="h-px w-12 bg-gradient-to-r from-gold to-transparent"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-gold/60"></div>
+          <div class="h-px w-12 bg-gradient-to-l from-gold to-transparent"></div>
+        </div>
+
+        <p class="anim-4 text-bark-mid/75 font-sans text-sm leading-relaxed font-light max-w-md mb-5">
+          Tunay na likhain ng Pilipino — gawa sa puso, para sa pamilya. Sariwang-sariwa, diretso sa inyong pintuan.
+        </p>
+
+        <div class="anim-5 flex flex-col sm:flex-row gap-3">
+          <a href="{{ route('register') }}" class="btn-primary flex items-center justify-center gap-2.5 bg-bark text-cream text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:bg-bark-mid transition-colors duration-300 shadow-lg shadow-bark/25">
+            Mag-order Na
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          <a href="#featured" class="flex items-center justify-center gap-2 border border-bark/25 text-bark text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:border-gold hover:text-rust transition-all duration-300">
+            Tingnan ang Produkto
+          </a>
+        </div>
       </div>
 
-      <div class="anim-3 text-center mb-2">
-        <h1 class="font-display text-6xl md:text-7xl font-light text-bark leading-[1.1] tracking-tight">Andaya's</h1>
-        <h1 class="font-display text-6xl md:text-7xl font-light italic brand-italic leading-[1.05] tracking-tight">Native Products</h1>
-      </div>
+      <!-- RIGHT: Visual Card -->
+      <div class="anim-3 flex-1 flex items-center justify-center w-full max-w-sm lg:max-w-md relative">
 
-      <div class="anim-3 flex justify-center my-6">
+        <!-- Main visual card -->
+        <div class="hero-visual relative w-full rounded-2xl p-8 shadow-2xl shadow-bark/20 overflow-hidden">
+          <!-- corner accents -->
+          <div class="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-gold/50"></div>
+          <div class="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-gold/50"></div>
+          <div class="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-gold/50"></div>
+          <div class="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-gold/50"></div>
+
+          <!-- center emblem -->
+          <div class="flex flex-col items-center justify-center py-10">
+            <div class="gold-ring w-28 h-28 rounded-full flex items-center justify-center bg-cream/80 shadow-inner mb-5">
+              <div class="gold-ring w-20 h-20 rounded-full flex items-center justify-center bg-cream">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C6 2 3 7 3 12c0 6 5 10 9 10 1-3 1-7-1-10 3 2 5 6 5 10 4-2 5-6 5-10C21 7 18 2 12 2z" fill="#b8924a" opacity="0.85"/>
+                  <path d="M12 12 Q12 7 12 2" stroke="#d4aa6a" stroke-width="0.8" opacity="0.7"/>
+                </svg>
+              </div>
+            </div>
+            <p class="font-display text-2xl text-bark font-medium tracking-wide mb-1">Andaya's</p>
+            <p class="text-gold text-xs tracking-[0.3em] uppercase font-light">Native Products</p>
+            <div class="flex items-center gap-2 mt-4">
+              <div class="h-px w-10 bg-gradient-to-r from-transparent to-gold/60"></div>
+              <div class="w-1 h-1 rounded-full bg-gold/60"></div>
+              <div class="h-px w-10 bg-gradient-to-l from-transparent to-gold/60"></div>
+            </div>
+          </div>
+
+          <!-- bottom tag -->
+          <div class="flex justify-center">
+            <span class="text-[10px] tracking-[0.25em] uppercase text-bark/40 font-light">Est. Pilipinas · Homemade · Sariwa</span>
+          </div>
+        </div>
+
+        <!-- Floating badges -->
+        <div class="float-badge absolute -top-4 -right-4 bg-bark text-cream rounded-xl px-4 py-3 shadow-lg shadow-bark/30 flex items-center gap-2">
+          <span class="text-xl">🍚</span>
+          <div>
+            <p class="text-[10px] text-cream/50 uppercase tracking-wider">Bestseller</p>
+            <p class="text-xs font-medium text-gold">Puto Bumbong</p>
+          </div>
+        </div>
+
+        <div class="float-badge-2 absolute -bottom-4 -left-4 bg-cream border border-gold/30 rounded-xl px-4 py-3 shadow-lg shadow-bark/15 flex items-center gap-2">
+          <span class="text-xl">🍬</span>
+          <div>
+            <p class="text-[10px] text-bark/40 uppercase tracking-wider">Paborito</p>
+            <p class="text-xs font-medium text-bark">Ube Halaya</p>
+          </div>
+        </div>
+
+        <div class="float-badge-3 absolute top-1/2 -left-8 -translate-y-1/2 bg-gold text-bark rounded-xl px-4 py-3 shadow-lg shadow-gold/30 flex items-center gap-2">
+          <span class="text-xl">🌿</span>
+          <div>
+            <p class="text-[10px] text-bark/60 uppercase tracking-wider">Organic</p>
+            <p class="text-xs font-semibold">100% Natural</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── FEATURED PRODUCTS SECTION ───── -->
+  <section id="featured" class="py-24 px-5 bg-cream-dark/40">
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal flex justify-center mb-6">
+        <span class="divider-ornament text-gold text-xs tracking-[0.35em] uppercase font-sans font-medium">Piling Produkto</span>
+      </div>
+      <div class="reveal text-center mb-2">
+        <h2 class="font-display text-5xl md:text-6xl font-light text-bark leading-[1.1] tracking-tight">Featured na</h2>
+        <h2 class="font-display text-5xl md:text-6xl font-light italic brand-italic leading-[1.05] tracking-tight">Mga Produkto</h2>
+      </div>
+      <div class="reveal flex justify-center my-7">
         <div class="w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
       </div>
-
-      <p class="anim-4 text-center text-bark-mid/80 font-sans text-base leading-relaxed font-light max-w-sm mx-auto">
-        Isang modernong portal para sa mga taong nagmamahal sa tunay na likha ng Pilipino — dinisenyo para sa husay, iningatan para sa kalikasan.
-      </p>
-
-      <div class="anim-5 flex flex-col sm:flex-row gap-3 mt-9 justify-center">
-        <a href="{{ route('login') }}" class="btn-primary flex items-center justify-center gap-2.5 bg-bark text-cream text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:bg-bark-mid transition-colors duration-300 shadow-md shadow-bark/20">
-          Pumasok sa Dashboard
+      <p class="reveal text-center text-bark-mid/70 text-sm font-light mb-12">Piling produkto na paborito ng aming mga customer — mag-register para mag-order.</p>
+      <div class="reveal grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+        <div class="value-card rounded-xl overflow-hidden">
+          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍚</div>
+          <div class="p-5">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-rust bg-rust/10 px-2 py-0.5 rounded-sm">Bestseller</span>
+            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Puto Bumbong</h3>
+            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Tradisyonal na kakanin, gawa sa pirurutong bigas.</p>
+            <p class="text-gold font-display text-lg font-semibold">₱85.00</p>
+          </div>
+        </div>
+        <div class="value-card rounded-xl overflow-hidden">
+          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍯</div>
+          <div class="p-5">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-sm">Bagong Dating</span>
+            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Latik Spread</h3>
+            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Matamis na latik, perpekto sa tinapay o kakanin.</p>
+            <p class="text-gold font-display text-lg font-semibold">₱120.00</p>
+          </div>
+        </div>
+        <div class="value-card rounded-xl overflow-hidden">
+          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🌿</div>
+          <div class="p-5">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-sm">Organic</span>
+            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Pandan Pastillas</h3>
+            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Malambot na pastillas na may natural na pandan.</p>
+            <p class="text-gold font-display text-lg font-semibold">₱65.00</p>
+          </div>
+        </div>
+        <div class="value-card rounded-xl overflow-hidden">
+          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍬</div>
+          <div class="p-5">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-rust bg-rust/10 px-2 py-0.5 rounded-sm">Paborito</span>
+            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Ube Halaya</h3>
+            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Creamy at masustansyang ube halaya, homemade.</p>
+            <p class="text-gold font-display text-lg font-semibold">₱150.00</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal flex justify-center">
+        <a href="{{ route('register') }}" class="btn-primary flex items-center gap-2.5 bg-bark text-cream text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:bg-bark-mid transition-colors duration-300 shadow-md shadow-bark/20">
+          Mag-register para Mag-order
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
           </svg>
-        </a>
-        <a href="#about" class="flex items-center justify-center gap-2 border border-bark/25 text-bark text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:border-gold hover:text-rust transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-sage" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20C19 20 22 3 22 3c-1 2-8 5.5-8 5.5C14 8 17 8 17 8z"/>
-          </svg>
-          Alamin ang Higit Pa
         </a>
       </div>
     </div>
@@ -339,9 +490,33 @@
   </section>
 
   <!-- FOOTER -->
-  <footer class="py-6 flex justify-center border-t border-bark/10">
-    <div class="text-bark/40 text-xs tracking-[0.2em] uppercase font-sans">
-      © 2025 Andaya's Native Products · Pilipinas
+  <footer class="border-t border-bark/10 bg-bark text-cream/70 pt-12 pb-6 px-6">
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+      <div>
+        <div class="text-gold font-display text-lg font-semibold tracking-widest uppercase mb-1">Andaya's</div>
+        <div class="text-cream/40 text-[10px] tracking-[0.2em] uppercase mb-4">Native Products</div>
+        <p class="text-cream/60 text-sm font-light leading-relaxed">Nagbibigay ng masustansya at masarap na native products mula sa aming pamilya para sa inyo.</p>
+      </div>
+      <div>
+        <h4 class="text-cream/90 text-xs tracking-[0.2em] uppercase font-medium mb-4">Mabilis na Links</h4>
+        <ul class="flex flex-col gap-2 text-sm font-light">
+          <li><a href="#hero" class="text-cream/60 hover:text-gold transition-colors">Home</a></li>
+          <li><a href="#featured" class="text-cream/60 hover:text-gold transition-colors">Mga Produkto</a></li>
+          <li><a href="{{ route('login') }}" class="text-cream/60 hover:text-gold transition-colors">Sign In</a></li>
+          <li><a href="{{ route('register') }}" class="text-cream/60 hover:text-gold transition-colors">Register</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-cream/90 text-xs tracking-[0.2em] uppercase font-medium mb-4">Makipag-ugnayan</h4>
+        <ul class="flex flex-col gap-3 text-sm font-light">
+          <li class="flex items-start gap-2 text-cream/60"><span>📧</span> andayantiveproduct1@gmail.com</li>
+          <li class="flex items-start gap-2 text-cream/60"><span>📍</span> Andaya St., Quezon City, Philippines</li>
+          <li class="flex items-start gap-2 text-cream/60"><span>📞</span> +63 912 345 6789</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-cream/10 pt-6 text-center text-cream/30 text-xs tracking-[0.2em] uppercase">
+      © 2025 Andaya's Native Products · Lahat ng karapatan ay nakalaan.
     </div>
   </footer>
 

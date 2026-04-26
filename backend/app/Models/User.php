@@ -22,29 +22,30 @@ class User extends Authenticatable
         'name',
         'email',
         'role',
+        'address',
+        'cart',
         'password',
+        'verification_code',
+        'verification_expires_at',
+        'email_verified_at',
+        'password_reset_code',
+        'password_reset_expires_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'cart'              => 'array',
         ];
     }
+
+    public function orders() { return $this->hasMany(Order::class); }
+    public function invoices() { return $this->hasMany(Invoice::class); }
 }

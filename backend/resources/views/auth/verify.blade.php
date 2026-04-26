@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In – Andaya's Native Products</title>
+  <title>Verify Email – Andaya's Native Products</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <script>
@@ -66,13 +66,6 @@
     .anim-3 { animation: fadeUp 0.7s ease 0.30s both; }
     .anim-4 { animation: fadeUp 0.7s ease 0.45s both; }
     .anim-5 { animation: fadeUp 0.7s ease 0.60s both; }
-    .nav-link { position: relative; }
-    .nav-link::after {
-      content: ''; position: absolute; bottom: -2px; left: 50%;
-      width: 0; height: 1px; background: #b8924a;
-      transition: all 0.3s ease; transform: translateX(-50%);
-    }
-    .nav-link:hover::after { width: 100%; }
     .logo-ring { border: 1.5px solid rgba(184,146,74,0.4); }
     .input-field {
       width: 100%; background: rgba(255,255,255,0.6);
@@ -80,8 +73,9 @@
       padding: 14px 16px; font-family: 'Jost', sans-serif;
       font-size: 15px; color: #2c1a0e; outline: none;
       transition: border-color 0.3s ease, background 0.3s ease;
+      text-align: center; letter-spacing: 0.3em; font-size: 22px;
     }
-    .input-field::placeholder { color: rgba(74,46,26,0.4); }
+    .input-field::placeholder { color: rgba(74,46,26,0.3); letter-spacing: 0.1em; font-size: 15px; }
     .input-field:focus { border-color: rgba(184,146,74,0.6); background: rgba(255,255,255,0.85); }
   </style>
 </head>
@@ -93,7 +87,6 @@
       <div class="logo-ring w-10 h-10 rounded-full flex items-center justify-center bg-bark-mid/60">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
           <path d="M12 2C6 2 3 7 3 12c0 6 5 10 9 10 1-3 1-7-1-10 3 2 5 6 5 10 4-2 5-6 5-10C21 7 18 2 12 2z" fill="#b8924a" opacity="0.9"/>
-          <path d="M12 12 Q12 7 12 2" stroke="#d4aa6a" stroke-width="0.8" opacity="0.6"/>
         </svg>
       </div>
       <div class="leading-tight">
@@ -101,86 +94,73 @@
         <div class="text-gold-light/60 text-[10px] tracking-[0.2em] uppercase font-sans font-light">Native Products</div>
       </div>
     </a>
-    <div class="flex items-center gap-7">
-      <a href="{{ route('home') }}" class="nav-link text-sm tracking-[0.15em] uppercase font-light transition-colors duration-200 {{ request()->routeIs('home') ? 'text-gold border-b border-gold pb-0.5' : 'text-cream/70 hover:text-cream' }}">Home</a>
-      <a href="{{ route('about') }}" class="nav-link text-sm tracking-[0.15em] uppercase font-light transition-colors duration-200 {{ request()->routeIs('about') ? 'text-gold border-b border-gold pb-0.5' : 'text-cream/70 hover:text-cream' }}">About Us</a>
-      <a href="{{ route('services') }}" class="nav-link text-sm tracking-[0.15em] uppercase font-light transition-colors duration-200 {{ request()->routeIs('services') ? 'text-gold border-b border-gold pb-0.5' : 'text-cream/70 hover:text-cream' }}">Services</a>
-      <a href="{{ route('register') }}" class="ml-2 px-5 py-2 border text-sm tracking-[0.15em] uppercase font-light transition-all duration-300 rounded-sm {{ request()->routeIs('register') ? 'bg-gold text-bark border-gold' : 'border-gold/50 text-gold hover:bg-gold hover:text-bark' }}">Register</a>
-    </div>
   </nav>
 
   <!-- MAIN -->
-  <main class="min-h-screen flex items-center justify-center px-5 pt-16 pb-10">
+  <main class="min-h-screen flex items-center justify-center px-5 pt-24 pb-10">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-gold/5 blur-3xl"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-rust/5 blur-3xl"></div>
     </div>
 
-    <div class="relative hero-card rounded-2xl border border-bark/10 shadow-2xl shadow-bark/15 w-full max-w-lg px-12 py-14 overflow-hidden">
+    <div class="relative hero-card rounded-2xl border border-bark/10 shadow-2xl shadow-bark/15 w-full max-w-md px-12 py-14 overflow-hidden">
       <div class="absolute top-4 left-4 w-6 h-6 border-t border-l border-gold/40"></div>
       <div class="absolute top-4 right-4 w-6 h-6 border-t border-r border-gold/40"></div>
       <div class="absolute bottom-4 left-4 w-6 h-6 border-b border-l border-gold/40"></div>
       <div class="absolute bottom-4 right-4 w-6 h-6 border-b border-r border-gold/40"></div>
 
       <div class="anim-2 flex justify-center mb-6">
-        <span class="divider-ornament text-gold text-xs tracking-[0.35em] uppercase font-sans font-medium">Maligayang Pagbabalik</span>
+        <span class="divider-ornament text-gold text-xs tracking-[0.35em] uppercase font-sans font-medium">Halos Tapos Na</span>
       </div>
 
       <div class="anim-3 text-center mb-2">
-        <h1 class="font-display text-5xl md:text-6xl font-light text-bark leading-[1.1] tracking-tight">Mag-sign in sa</h1>
-        <h1 class="font-display text-5xl md:text-6xl font-light italic brand-italic leading-[1.05] tracking-tight">Iyong Account</h1>
+        <h1 class="font-display text-5xl font-light text-bark leading-[1.1] tracking-tight">I-verify ang</h1>
+        <h1 class="font-display text-5xl font-light italic brand-italic leading-[1.05] tracking-tight">Iyong Email</h1>
       </div>
 
       <div class="anim-3 flex justify-center my-6">
         <div class="w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent"></div>
       </div>
 
-      <form method="POST" action="{{ route('login.post') }}" class="anim-4 flex flex-col gap-5">
+      <p class="anim-3 text-center text-sm text-bark-mid/60 tracking-wide mb-6">
+        Nagpadala kami ng 6-digit verification code sa<br>
+        <span class="text-bark font-medium">{{ session('verify_email') }}</span>
+      </p>
+
+      @if($errors->any())
+        <div class="text-rust text-sm text-center tracking-wide bg-rust/10 py-3 px-4 rounded mb-4">
+          {{ $errors->first() }}
+        </div>
+      @endif
+
+      @if(session('success'))
+        <div class="text-sage text-sm text-center tracking-wide bg-sage/10 py-3 px-4 rounded mb-4">
+          {{ session('success') }}
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('verify.submit') }}" class="anim-4 flex flex-col gap-5">
         @csrf
-
-        @if(session('success'))
-          <div class="text-sage text-sm text-center tracking-wide bg-sage/10 py-3 px-4 rounded">
-            {{ session('success') }}
-          </div>
-        @endif
-
-        @if($errors->any())
-          <div class="text-rust text-sm text-center tracking-wide bg-rust/10 py-3 px-4 rounded">
-            {{ $errors->first() }}
-          </div>
-        @endif
-
         <div class="flex flex-col gap-2">
-          <label class="text-xs tracking-[0.2em] uppercase text-bark-mid/70 font-sans font-medium">Email</label>
-          <input type="email" name="email" placeholder="email@halimbawa.com" class="input-field" value="{{ old('email') }}" required/>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-xs tracking-[0.2em] uppercase text-bark-mid/70 font-sans font-medium">Password</label>
-          <input type="password" name="password" placeholder="••••••••" class="input-field" required/>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" name="remember" class="accent-gold w-4 h-4"/>
-            <span class="text-sm text-bark-mid/70 tracking-wide">Remember me</span>
-          </label>
-          <a href="{{ route('forgot.password') }}" class="text-sm text-gold hover:text-rust transition-colors tracking-wide">Nakalimutan ang password?</a>
+          <label class="text-xs tracking-[0.2em] uppercase text-bark-mid/70 font-sans font-medium text-center">Verification Code</label>
+          <input type="text" name="code" maxlength="6" placeholder="000000" class="input-field" autocomplete="off" required/>
         </div>
 
         <button type="submit" class="btn-primary mt-1 bg-bark text-cream text-sm tracking-[0.18em] uppercase font-medium px-7 py-4 rounded-sm hover:bg-bark-mid transition-colors duration-300 shadow-md shadow-bark/20">
-          Pumasok
+          I-verify
         </button>
       </form>
 
-      <div class="anim-5 text-center mt-7">
-        <span class="text-sm text-bark-mid/60 tracking-wide">Wala pang account? </span>
-        <a href="{{ route('register') }}" class="text-sm text-gold hover:text-rust transition-colors tracking-wide font-medium">Mag-register</a>
+      <div class="anim-5 text-center mt-6">
+        <span class="text-sm text-bark-mid/60 tracking-wide">Hindi natanggap? </span>
+        <form method="POST" action="{{ route('verify.resend') }}" class="inline">
+          @csrf
+          <button type="submit" class="text-sm text-gold hover:text-rust transition-colors tracking-wide font-medium">Magpadala ulit</button>
+        </form>
       </div>
     </div>
   </main>
 
-  <footer class="py-5 flex justify-center border-t border-bark/10 mt-8">
+  <footer class="py-5 flex justify-center border-t border-bark/10">
     <div class="text-bark/40 text-xs tracking-[0.2em] uppercase font-sans">© 2025 Andaya's Native Products · Pilipinas</div>
   </footer>
 
