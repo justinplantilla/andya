@@ -7,7 +7,9 @@ Route::get('/', function () {
     return view('index', [
         'featured_products' => \App\Models\Product::with(['category', 'inventory'])
             ->where('status', 'active')
-            ->latest()->take(6)->get(),
+            ->withSum('orderItems', 'quantity')
+            ->orderByDesc('order_items_sum_quantity')
+            ->take(8)->get(),
         'store_name'    => \App\Models\Setting::get('store_name', "Andaya's Native Products"),
         'store_email'   => \App\Models\Setting::get('store_email'),
         'store_phone'   => \App\Models\Setting::get('store_phone'),

@@ -266,30 +266,50 @@
           </div>
         </div>
 
-        <!-- Floating badges -->
+        <!-- Floating badges - actual products -->
+        @php $heroProducts = $featured_products->take(3); @endphp
+
+        @if($heroProducts->count() > 0)
         <div class="float-badge absolute -top-4 -right-4 bg-bark text-cream rounded-xl px-4 py-3 shadow-lg shadow-bark/30 flex items-center gap-2">
-          <span class="text-xl">🍚</span>
+          @if($heroProducts[0]->image)
+            <img src="{{ asset('storage/'.$heroProducts[0]->image) }}" class="w-8 h-8 object-contain rounded"/>
+          @else
+            <span class="text-xl">📦</span>
+          @endif
           <div>
-            <p class="text-[10px] text-cream/50 uppercase tracking-wider">Bestseller</p>
-            <p class="text-xs font-medium text-gold">Puto Bumbong</p>
+            <p class="text-[10px] text-cream/50 uppercase tracking-wider">{{ $heroProducts[0]->category->name }}</p>
+            <p class="text-xs font-medium text-gold">{{ $heroProducts[0]->name }}</p>
           </div>
         </div>
+        @endif
 
+        @if($heroProducts->count() > 1)
         <div class="float-badge-2 absolute -bottom-4 -left-4 bg-cream border border-gold/30 rounded-xl px-4 py-3 shadow-lg shadow-bark/15 flex items-center gap-2">
-          <span class="text-xl">🍬</span>
+          @if($heroProducts[1]->image)
+            <img src="{{ asset('storage/'.$heroProducts[1]->image) }}" class="w-8 h-8 object-contain rounded"/>
+          @else
+            <span class="text-xl">📦</span>
+          @endif
           <div>
-            <p class="text-[10px] text-bark/40 uppercase tracking-wider">Paborito</p>
-            <p class="text-xs font-medium text-bark">Ube Halaya</p>
+            <p class="text-[10px] text-bark/40 uppercase tracking-wider">{{ $heroProducts[1]->category->name }}</p>
+            <p class="text-xs font-medium text-bark">{{ $heroProducts[1]->name }}</p>
           </div>
         </div>
+        @endif
 
+        @if($heroProducts->count() > 2)
         <div class="float-badge-3 absolute top-1/2 -left-8 -translate-y-1/2 bg-gold text-bark rounded-xl px-4 py-3 shadow-lg shadow-gold/30 flex items-center gap-2">
-          <span class="text-xl">🌿</span>
+          @if($heroProducts[2]->image)
+            <img src="{{ asset('storage/'.$heroProducts[2]->image) }}" class="w-8 h-8 object-contain rounded"/>
+          @else
+            <span class="text-xl">📦</span>
+          @endif
           <div>
-            <p class="text-[10px] text-bark/60 uppercase tracking-wider">Organic</p>
-            <p class="text-xs font-semibold">100% Natural</p>
+            <p class="text-[10px] text-bark/60 uppercase tracking-wider">{{ $heroProducts[2]->category->name }}</p>
+            <p class="text-xs font-semibold">{{ $heroProducts[2]->name }}</p>
           </div>
         </div>
+        @endif
 
       </div>
     </div>
@@ -310,42 +330,25 @@
       </div>
       <p class="reveal text-center text-bark-mid/70 text-sm font-light mb-12">Piling produkto na paborito ng aming mga customer — mag-register para mag-order.</p>
       <div class="reveal grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-10">
-        <div class="value-card rounded-xl overflow-hidden">
-          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍚</div>
-          <div class="p-5">
-            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-rust bg-rust/10 px-2 py-0.5 rounded-sm">Bestseller</span>
-            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Puto Bumbong</h3>
-            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Tradisyonal na kakanin, gawa sa pirurutong bigas.</p>
-            <p class="text-gold font-display text-lg font-semibold">₱85.00</p>
+        @forelse($featured_products as $product)
+        <div class="value-card rounded-xl overflow-hidden flex flex-col">
+          <div class="bg-white h-32 flex items-center justify-center p-3">
+            @if($product->image)
+              <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-contain"/>
+            @else
+              <svg class="w-10 h-10 text-bark/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            @endif
+          </div>
+          <div class="p-5 flex flex-col flex-1">
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-gold bg-gold/10 px-2 py-0.5 rounded-sm self-start">{{ $product->category->name }}</span>
+            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">{{ $product->name }}</h3>
+            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3 flex-1">{{ $product->description ?? 'Katutubong produkto mula sa Pilipinas.' }}</p>
+            <p class="text-gold font-display text-lg font-semibold">₱{{ number_format($product->price, 2) }}</p>
           </div>
         </div>
-        <div class="value-card rounded-xl overflow-hidden">
-          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍯</div>
-          <div class="p-5">
-            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-sm">Bagong Dating</span>
-            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Latik Spread</h3>
-            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Matamis na latik, perpekto sa tinapay o kakanin.</p>
-            <p class="text-gold font-display text-lg font-semibold">₱120.00</p>
-          </div>
-        </div>
-        <div class="value-card rounded-xl overflow-hidden">
-          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🌿</div>
-          <div class="p-5">
-            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-sm">Organic</span>
-            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Pandan Pastillas</h3>
-            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Malambot na pastillas na may natural na pandan.</p>
-            <p class="text-gold font-display text-lg font-semibold">₱65.00</p>
-          </div>
-        </div>
-        <div class="value-card rounded-xl overflow-hidden">
-          <div class="bg-cream-dark h-32 flex items-center justify-center text-5xl">🍬</div>
-          <div class="p-5">
-            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-rust bg-rust/10 px-2 py-0.5 rounded-sm">Paborito</span>
-            <h3 class="font-display text-xl text-bark font-medium mt-2 mb-1">Ube Halaya</h3>
-            <p class="text-bark-mid/60 text-xs leading-relaxed font-light mb-3">Creamy at masustansyang ube halaya, homemade.</p>
-            <p class="text-gold font-display text-lg font-semibold">₱150.00</p>
-          </div>
-        </div>
+        @empty
+        <div class="col-span-4 text-center text-bark-mid/40 text-sm py-10">Wala pang mga produkto.</div>
+        @endforelse
       </div>
       <div class="reveal flex justify-center">
         <a href="{{ route('register') }}" class="btn-primary flex items-center gap-2.5 bg-bark text-cream text-sm tracking-[0.18em] uppercase font-medium px-8 py-4 rounded-sm hover:bg-bark-mid transition-colors duration-300 shadow-md shadow-bark/20">
@@ -385,21 +388,27 @@
         <div class="value-card rounded-xl p-8 text-center relative overflow-hidden">
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
-          <div class="text-4xl mb-4">🌿</div>
+          <div class="w-12 h-12 rounded-full bg-sage/15 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-4 6-4 9a4 4 0 008 0c0-3-2.5-5-4-9z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12v9"/></svg>
+          </div>
           <h3 class="font-display text-2xl text-bark font-medium mb-3">Kalikasan</h3>
           <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Gumagamit kami ng mga natural at sustainable na materyales para sa bawat produkto.</p>
         </div>
         <div class="value-card rounded-xl p-8 text-center relative overflow-hidden">
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
-          <div class="text-4xl mb-4">🤝</div>
+          <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
           <h3 class="font-display text-2xl text-bark font-medium mb-3">Komunidad</h3>
           <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Sumusuporta kami sa mga lokal na artisano at magsasaka sa buong Pilipinas.</p>
         </div>
         <div class="value-card rounded-xl p-8 text-center relative overflow-hidden">
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
-          <div class="text-4xl mb-4">✨</div>
+          <div class="w-12 h-12 rounded-full bg-rust/10 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-rust" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          </div>
           <h3 class="font-display text-2xl text-bark font-medium mb-3">Kalidad</h3>
           <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Bawat produkto ay dumaan sa mahigpit na pamantayan bago makarating sa inyong mga kamay.</p>
         </div>
@@ -433,7 +442,9 @@
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
           <div class="flex items-start gap-4">
-            <div class="text-2xl mt-0.5">🛒</div>
+            <div class="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
             <div>
               <h3 class="font-display text-2xl text-bark font-medium mb-2">Online Ordering</h3>
               <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Mag-order ng inyong mga paboritong produkto nang madali at mabilis sa pamamagitan ng aming sistema.</p>
@@ -444,7 +455,9 @@
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
           <div class="flex items-start gap-4">
-            <div class="text-2xl mt-0.5">📦</div>
+            <div class="w-10 h-10 rounded-full bg-bark/8 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </div>
             <div>
               <h3 class="font-display text-2xl text-bark font-medium mb-2">Inventory Management</h3>
               <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Real-time na pagsubaybay ng mga produkto para masiguro na laging available ang inyong mga kailangan.</p>
@@ -455,7 +468,9 @@
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
           <div class="flex items-start gap-4">
-            <div class="text-2xl mt-0.5">🚚</div>
+            <div class="w-10 h-10 rounded-full bg-sage/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+            </div>
             <div>
               <h3 class="font-display text-2xl text-bark font-medium mb-2">Delivery Tracking</h3>
               <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Subaybayan ang inyong mga order mula sa aming bodega hanggang sa inyong pintuan.</p>
@@ -466,7 +481,9 @@
           <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
           <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
           <div class="flex items-start gap-4">
-            <div class="text-2xl mt-0.5">📊</div>
+            <div class="w-10 h-10 rounded-full bg-rust/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5 text-rust" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
             <div>
               <h3 class="font-display text-2xl text-bark font-medium mb-2">Sales Reports</h3>
               <p class="text-bark-mid/70 text-sm leading-relaxed font-sans font-light">Detalyadong ulat ng mga benta at transaksyon para sa mas matalinong pamamahala ng negosyo.</p>

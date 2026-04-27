@@ -34,21 +34,22 @@
 @else
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
     @foreach($products as $product)
-    <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-      <div class="h-44 bg-bark/5 flex items-center justify-center">
+    <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col">
+      <div class="h-44 bg-white flex items-center justify-center p-3 flex-shrink-0">
         @if($product->image)
-          <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-cover"/>
+          <img src="{{ asset('storage/'.$product->image) }}" class="h-full w-full object-contain"/>
         @else
           <svg class="w-12 h-12 text-bark/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
         @endif
       </div>
-      <div class="p-4">
+      <div class="p-4 flex flex-col flex-1">
         <div class="text-[10px] text-gold tracking-widest uppercase mb-1">{{ $product->category->name }}</div>
         <div class="font-display text-lg text-bark font-medium leading-tight mb-1">{{ $product->name }}</div>
         <div class="text-xs text-bark-mid/50 mb-2">
           {{ $product->inventory ? $product->inventory->quantity : 0 }} {{ $product->unit }} available
         </div>
         <div class="font-sans text-lg text-bark font-semibold mb-3">₱{{ number_format($product->price, 2) }}</div>
+        <div class="mt-auto">
         @if($product->inventory && $product->inventory->quantity > 0)
           <div class="flex flex-col gap-2">
             <form method="POST" action="{{ route('customer.cart.add') }}">
@@ -69,7 +70,9 @@
           </div>
         @else
           <span class="badge badge-cancelled text-xs">Out of Stock</span>
+        </div>
         @endif
+        </div>
       </div>
     </div>
     @endforeach
@@ -103,8 +106,8 @@
 
         <!-- Product Info -->
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-xl bg-bark/5 flex-shrink-0 overflow-hidden flex items-center justify-center">
-            <img id="modal-image" src="" class="w-full h-full object-cover hidden"/>
+          <div class="w-16 h-16 rounded-xl bg-white flex-shrink-0 overflow-hidden flex items-center justify-center p-1">
+            <img id="modal-image" src="" class="w-full h-full object-contain hidden"/>
             <svg id="modal-image-placeholder" class="w-7 h-7 text-bark/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
           </div>
           <div class="flex-1 min-w-0">
@@ -209,13 +212,29 @@
       <!-- Footer (fixed) -->
       <div class="px-6 py-4 border-t border-gold/10 flex gap-3 flex-shrink-0">
         <button type="button" onclick="closeBuyNow()" class="btn-outline flex-1 justify-center">Cancel</button>
-        <button type="submit" class="btn-gold flex-1 justify-center">
+        <button type="button" onclick="showConfirm()" class="btn-gold flex-1 justify-center">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Confirm Order
         </button>
       </div>
-
     </form>
+  </div>
+</div>
+
+<!-- ───── ORDER CONFIRMATION MODAL ───── -->
+<div id="confirm-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center">
+  <div class="absolute inset-0 bg-bark/50 backdrop-blur-sm" onclick="hideConfirm()"></div>
+  <div class="relative bg-cream rounded-2xl border border-gold/20 shadow-2xl p-8 w-80 text-center">
+    <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <h3 class="font-display text-xl text-bark font-medium mb-1">Kumpirmahin ang Order?</h3>
+    <p class="text-bark-mid/60 text-sm mb-1">Produkto: <span class="font-semibold text-bark" id="confirm-name"></span></p>
+    <p class="text-bark-mid/60 text-sm mb-6">Kabuuan: <span class="font-semibold text-gold" id="confirm-total"></span></p>
+    <div class="flex gap-3">
+      <button onclick="hideConfirm()" class="flex-1 btn-outline">Bumalik</button>
+      <button onclick="document.getElementById('buy-now-form').submit()" class="flex-1 btn-gold justify-center">I-order Na</button>
+    </div>
   </div>
 </div>
 
@@ -311,6 +330,16 @@
     document.getElementById('addr-toggle-btn').textContent = 'Change';
   }
 
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBuyNow(); });
+  function showConfirm() {
+    document.getElementById('confirm-name').textContent  = document.getElementById('modal-name').textContent;
+    document.getElementById('confirm-total').textContent = document.getElementById('modal-total').textContent;
+    document.getElementById('confirm-modal').classList.remove('hidden');
+  }
+
+  function hideConfirm() {
+    document.getElementById('confirm-modal').classList.add('hidden');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeBuyNow(); hideConfirm(); } });
 </script>
 @endsection

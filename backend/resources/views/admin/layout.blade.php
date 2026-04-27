@@ -187,10 +187,10 @@
         Settings
       </a>
 
-      <a href="{{ route('logout.get') }}" class="nav-item hover:!bg-rust/20 hover:!text-rust/80">
+      <button onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="nav-item hover:!bg-rust/20 hover:!text-rust/80">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
         Logout
-      </a>
+      </button>
     </nav>
 
     <div class="px-5 py-4 border-t border-white/8">
@@ -267,6 +267,22 @@
     <main class="flex-1 px-8 py-8">
       @yield('content')
     </main>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-bark/40 backdrop-blur-sm" onclick="document.getElementById('logout-modal').classList.add('hidden')"></div>
+    <div class="relative bg-cream rounded-2xl border border-gold/20 shadow-2xl p-8 w-80 text-center">
+      <div class="w-12 h-12 rounded-full bg-rust/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-rust" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      </div>
+      <h3 class="font-display text-xl text-bark font-medium mb-1">Mag-logout?</h3>
+      <p class="text-bark-mid/60 text-sm mb-6">Sigurado ka bang gusto mong lumabas?</p>
+      <div class="flex gap-3">
+        <button onclick="document.getElementById('logout-modal').classList.add('hidden')" class="flex-1 btn-outline">Kanselahin</button>
+        <a href="{{ route('logout.get') }}" class="flex-1 btn-gold justify-center">Logout</a>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>

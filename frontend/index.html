@@ -3,12 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Andaya</title>
+    <title>Andaya's Native Products</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero-bg {
+            background: linear-gradient(135deg, #3730a3 0%, #4338ca 50%, #6366f1 100%);
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        .product-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-primary {
+            background-color: #f59e0b;
+            color: #1e1b4b;
+            font-weight: 700;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+            display: inline-block;
+        }
+        .btn-primary:hover { background-color: #d97706; }
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+            display: inline-block;
+        }
+        .btn-outline:hover { background-color: rgba(255,255,255,0.15); }
+        .badge {
+            background-color: #fef3c7;
+            color: #92400e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body style="background-color:#f9fafb; font-family: ui-sans-serif, system-ui, sans-serif;">
 
-    <h1 class="text-3xl font-bold text-center mt-10">Welcome to Andaya</h1>
+    <!-- NAVBAR -->
+    <nav style="background-color:#3730a3; position:sticky; top:0; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+        <div style="max-width:1200px; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:64px;">
+            <a href="index.html" style="color:white; font-size:1.25rem; font-weight:700; letter-spacing:0.02em;">
+                🌿 Andaya's Native Products
+            </a>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <a href="login.html" style="color:#c7d2fe; font-size:0.9rem; font-weight:500; padding:0.4rem 1rem; border-radius:9999px; transition:background-color 0.2s;"
+                   onmouseover="this.style.backgroundColor='rgba(255,255,255,0.1)'" onmouseout="this.style.backgroundColor='transparent'">
+                    Sign In
+                </a>
+                <a href="register.html" style="background-color:#f59e0b; color:#1e1b4b; font-size:0.9rem; font-weight:700; padding:0.4rem 1.2rem; border-radius:9999px; transition:background-color 0.2s;"
+                   onmouseover="this.style.backgroundColor='#d97706'" onmouseout="this.style.backgroundColor='#f59e0b'">
+                    Register
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-bg" style="padding:5rem 1.5rem; text-align:center;">
+        <div style="max-width:700px; margin:0 auto;">
+            <span class="badge" style="margin-bottom:1rem; display:inline-block;">100% Authentic Native Products</span>
+            <h1 style="color:white; font-size:2.75rem; font-weight:800; line-height:1.2; margin-bottom:1rem;">
+                Lutong-Bahay na Lasa,<br>Diretso sa Inyong Pintuan
+            </h1>
+            <p style="color:#c7d2fe; font-size:1.1rem; margin-bottom:2rem; line-height:1.6;">
+                Tuklasin ang aming mga sariwang native products — gawa sa puso, para sa pamilya.
+            </p>
+            <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+                <a href="register.html" class="btn-primary">Mag-order Na</a>
+                <a href="#featured" class="btn-outline">Tingnan ang Produkto</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section id="featured" style="max-width:1200px; margin:0 auto; padding:4rem 1.5rem;">
+        <div style="text-align:center; margin-bottom:2.5rem;">
+            <h2 style="font-size:1.75rem; font-weight:800; color:#1e1b4b; margin-bottom:0.5rem;">Mga Featured na Produkto</h2>
+            <p style="color:#6b7280; font-size:0.95rem;">Piling produkto na paborito ng aming mga customer</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:1.5rem;">
+
+            <!-- Product Card 1 -->
+            <div class="product-card" style="background:white; border-radius:0.75rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="background:#e0e7ff; height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem;">🍚</div>
+                <div style="padding:1rem;">
+                    <span class="badge">Bestseller</span>
+                    <h3 style="font-weight:700; color:#1e1b4b; margin-top:0.5rem; margin-bottom:0.25rem;">Puto Bumbong</h3>
+                    <p style="color:#6b7280; font-size:0.82rem; margin-bottom:0.75rem;">Tradisyonal na kakanin, gawa sa pirurutong bigas.</p>
+                    <p style="color:#3730a3; font-weight:800; font-size:1.1rem;">₱85.00</p>
+                </div>
+            </div>
+
+            <!-- Product Card 2 -->
+            <div class="product-card" style="background:white; border-radius:0.75rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="background:#fef3c7; height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem;">🍯</div>
+                <div style="padding:1rem;">
+                    <span class="badge">Bagong Dating</span>
+                    <h3 style="font-weight:700; color:#1e1b4b; margin-top:0.5rem; margin-bottom:0.25rem;">Latik Spread</h3>
+                    <p style="color:#6b7280; font-size:0.82rem; margin-bottom:0.75rem;">Matamis na latik, perpekto sa tinapay o kakanin.</p>
+                    <p style="color:#3730a3; font-weight:800; font-size:1.1rem;">₱120.00</p>
+                </div>
+            </div>
+
+            <!-- Product Card 3 -->
+            <div class="product-card" style="background:white; border-radius:0.75rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="background:#d1fae5; height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem;">🌿</div>
+                <div style="padding:1rem;">
+                    <span class="badge">Organic</span>
+                    <h3 style="font-weight:700; color:#1e1b4b; margin-top:0.5rem; margin-bottom:0.25rem;">Pandan Pastillas</h3>
+                    <p style="color:#6b7280; font-size:0.82rem; margin-bottom:0.75rem;">Malambot na pastillas na may natural na pandan.</p>
+                    <p style="color:#3730a3; font-weight:800; font-size:1.1rem;">₱65.00</p>
+                </div>
+            </div>
+
+            <!-- Product Card 4 -->
+            <div class="product-card" style="background:white; border-radius:0.75rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="background:#fce7f3; height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem;">🍬</div>
+                <div style="padding:1rem;">
+                    <span class="badge">Paborito</span>
+                    <h3 style="font-weight:700; color:#1e1b4b; margin-top:0.5rem; margin-bottom:0.25rem;">Ube Halaya</h3>
+                    <p style="color:#6b7280; font-size:0.82rem; margin-bottom:0.75rem;">Creamy at masustansyang ube halaya, homemade.</p>
+                    <p style="color:#3730a3; font-weight:800; font-size:1.1rem;">₱150.00</p>
+                </div>
+            </div>
+
+        </div>
+        <div style="text-align:center; margin-top:2.5rem;">
+            <a href="register.html" class="btn-primary">Mag-register para Mag-order</a>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section style="background:#3730a3; padding:3.5rem 1.5rem;">
+        <div style="max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:2rem; text-align:center;">
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">🏠</div>
+                <h3 style="color:white; font-weight:700; margin-bottom:0.25rem;">Homemade</h3>
+                <p style="color:#c7d2fe; font-size:0.85rem;">Gawa sa bahay, may pagmamahal</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">🚚</div>
+                <h3 style="color:white; font-weight:700; margin-bottom:0.25rem;">Mabilis na Delivery</h3>
+                <p style="color:#c7d2fe; font-size:0.85rem;">Diretso sa inyong pintuan</p>
+            </div>
+            <div>
+                <div style="font-size:2rem; margin-bottom:0.5rem;">✅</div>
+                <h3 style="color:white; font-weight:700; margin-bottom:0.25rem;">Garantisadong Sariwa</h3>
+                <p style="color:#c7d2fe; font-size:0.85rem;">Sariwang-sariwa bawat order</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background:#1e1b4b; color:#c7d2fe; padding:2.5rem 1.5rem;">
+        <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:2rem;">
+            <div>
+                <h4 style="color:white; font-weight:700; margin-bottom:0.75rem; font-size:1rem;">🌿 Andaya's Native Products</h4>
+                <p style="font-size:0.85rem; line-height:1.6;">Nagbibigay ng masustansya at masarap na native products mula sa aming pamilya para sa inyo.</p>
+            </div>
+            <div>
+                <h4 style="color:white; font-weight:700; margin-bottom:0.75rem; font-size:0.95rem;">Mabilis na Links</h4>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.4rem; font-size:0.85rem;">
+                    <li><a href="index.html" style="color:#c7d2fe;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#c7d2fe'">Home</a></li>
+                    <li><a href="login.html" style="color:#c7d2fe;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#c7d2fe'">Sign In</a></li>
+                    <li><a href="register.html" style="color:#c7d2fe;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#c7d2fe'">Register</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color:white; font-weight:700; margin-bottom:0.75rem; font-size:0.95rem;">Makipag-ugnayan</h4>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+                    <li>📧 andayantiveproduct1@gmail.com</li>
+                    <li>📍 Andaya St., Quezon City, Philippines</li>
+                    <li>📞 +63 912 345 6789</li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top:1px solid #312e81; margin-top:2rem; padding-top:1.25rem; text-align:center; font-size:0.8rem; color:#6b7280;">
+            © 2025 Andaya's Native Products. Lahat ng karapatan ay nakalaan.
+        </div>
+    </footer>
 
     <script src="js/main.js"></script>
 </body>

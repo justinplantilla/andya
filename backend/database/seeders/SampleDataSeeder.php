@@ -32,11 +32,16 @@ class SampleDataSeeder extends Seeder
 
         // ── CATEGORIES ──
         $catIds = [];
-        $categories = ['Kakanin', 'Inumin', 'Pampalasa', 'Prutas', 'Gulay'];
+        $categories = [
+            ['name' => 'Kagamitan sa Bahay',       'desc' => 'Mga kagamitang pang-araw-araw sa tahanan.'],
+            ['name' => 'Kagamitan sa Kusina',       'desc' => 'Mga kagamitan at kasangkapan para sa pagluluto.'],
+            ['name' => 'Kasangkapan at Kagamitang Panlabas', 'desc' => 'Mga kasangkapan para sa labas ng bahay at trabaho.'],
+            ['name' => 'Fashion at Sining',         'desc' => 'Mga damit, alahas, at obra-maestra ng mga Pilipino.'],
+        ];
         foreach ($categories as $cat) {
             $catIds[] = DB::table('categories')->insertGetId([
-                'name'        => $cat,
-                'description' => 'Mga ' . $cat . ' na gawa sa Pilipinas.',
+                'name'        => $cat['name'],
+                'description' => $cat['desc'],
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);
@@ -44,16 +49,14 @@ class SampleDataSeeder extends Seeder
 
         // ── PRODUCTS ──
         $products = [
-            ['name' => 'Bibingka',        'category' => 0, 'price' => 45.00,  'unit' => 'pcs',  'stock' => 50],
-            ['name' => 'Puto',            'category' => 0, 'price' => 25.00,  'unit' => 'pcs',  'stock' => 80],
-            ['name' => 'Suman',           'category' => 0, 'price' => 30.00,  'unit' => 'pcs',  'stock' => 60],
-            ['name' => 'Buko Juice',      'category' => 1, 'price' => 35.00,  'unit' => 'btl',  'stock' => 100],
-            ['name' => 'Salabat',         'category' => 1, 'price' => 20.00,  'unit' => 'sachet','stock' => 8],
-            ['name' => 'Bagoong',         'category' => 2, 'price' => 55.00,  'unit' => 'jar',  'stock' => 40],
-            ['name' => 'Patis',           'category' => 2, 'price' => 40.00,  'unit' => 'btl',  'stock' => 5],
-            ['name' => 'Mangga',          'category' => 3, 'price' => 80.00,  'unit' => 'kg',   'stock' => 30],
-            ['name' => 'Lansones',        'category' => 3, 'price' => 120.00, 'unit' => 'kg',   'stock' => 20],
-            ['name' => 'Kangkong',        'category' => 4, 'price' => 15.00,  'unit' => 'bundle','stock' => 3],
+            ['name' => 'Walis Tambo',      'category' => 0, 'price' => 85.00,  'unit' => 'pcs', 'stock' => 50],
+            ['name' => 'Banig',            'category' => 0, 'price' => 150.00, 'unit' => 'pcs', 'stock' => 30],
+            ['name' => 'Palayok',          'category' => 1, 'price' => 120.00, 'unit' => 'pcs', 'stock' => 40],
+            ['name' => 'Kawali',           'category' => 1, 'price' => 200.00, 'unit' => 'pcs', 'stock' => 8],
+            ['name' => 'Pala',             'category' => 2, 'price' => 180.00, 'unit' => 'pcs', 'stock' => 25],
+            ['name' => 'Upuan na Kawayan', 'category' => 2, 'price' => 350.00, 'unit' => 'pcs', 'stock' => 5],
+            ['name' => 'Baro at Saya',     'category' => 3, 'price' => 850.00, 'unit' => 'pcs', 'stock' => 15],
+            ['name' => 'Pamaypay',         'category' => 3, 'price' => 75.00,  'unit' => 'pcs', 'stock' => 60],
         ];
 
         $productIds = [];
@@ -61,7 +64,7 @@ class SampleDataSeeder extends Seeder
             $productId = DB::table('products')->insertGetId([
                 'category_id' => $catIds[$p['category']],
                 'name'        => $p['name'],
-                'description' => 'Sariwang ' . $p['name'] . ' mula sa mga lokal na magsasaka.',
+                'description' => 'Katutubong ' . $p['name'] . ' gawa ng mga lokal na manggagawa.',
                 'price'       => $p['price'],
                 'unit'        => $p['unit'],
                 'status'      => 'active',

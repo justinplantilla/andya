@@ -113,9 +113,7 @@ class AdminController extends Controller
 
         $data = $request->only('name', 'category_id', 'price', 'unit', 'description', 'status');
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
+            if ($product->image) Storage::disk('public')->delete($product->image);
             $data['image'] = $request->file('image')->store('products', 'public');
         }
         $product->update($data);
