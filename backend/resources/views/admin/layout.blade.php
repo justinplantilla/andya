@@ -112,11 +112,7 @@
   <aside class="sidebar fixed top-0 left-0 h-full w-64 flex flex-col z-30 shadow-2xl">
     <div class="px-5 py-6 border-b border-white/5">
       <a href="{{ route('home') }}" class="flex items-center gap-3">
-        <div class="logo-ring w-9 h-9 rounded-full flex items-center justify-center bg-bark-mid/60">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2C6 2 3 7 3 12c0 6 5 10 9 10 1-3 1-7-1-10 3 2 5 6 5 10 4-2 5-6 5-10C21 7 18 2 12 2z" fill="#b8924a" opacity="0.9"/>
-          </svg>
-        </div>
+        <img src="{{ asset('images/andayalogo.png') }}" alt="Andaya Logo" class="h-14 w-auto object-contain">
         <div>
           <div class="text-gold-light font-display text-base font-semibold tracking-widest uppercase">Andaya's</div>
           <div class="text-gold-light/70 text-[9px] tracking-[0.2em] uppercase font-medium">Admin Panel</div>

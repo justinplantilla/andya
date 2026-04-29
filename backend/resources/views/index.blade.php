@@ -125,12 +125,7 @@
   <!-- NAVBAR -->
   <nav class="anim-1 fixed top-0 left-0 right-0 z-40 bg-bark/95 backdrop-blur-sm px-6 md:px-10 h-16 flex items-center justify-between shadow-sm">
     <a href="#hero" class="flex items-center gap-3 group">
-      <div class="logo-ring w-9 h-9 rounded-full flex items-center justify-center bg-bark-mid/60">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C6 2 3 7 3 12c0 6 5 10 9 10 1-3 1-7-1-10 3 2 5 6 5 10 4-2 5-6 5-10C21 7 18 2 12 2z" fill="#b8924a" opacity="0.9"/>
-          <path d="M12 12 Q12 7 12 2" stroke="#d4aa6a" stroke-width="0.8" opacity="0.6"/>
-        </svg>
-      </div>
+      <img src="{{ asset('images/andayalogo.png') }}" alt="Andaya Logo" class="h-14 w-auto object-contain">
       <div class="leading-tight">
         <div class="text-gold font-display text-base font-semibold tracking-widest uppercase">Andaya's</div>
         <div class="text-gold-light/60 text-[10px] tracking-[0.2em] uppercase font-sans font-light">Native Products</div>
