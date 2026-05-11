@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Andaya's System Flowchart</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f0e8; font-family: 'Segoe UI', sans-serif; padding: 40px 20px 80px; }
+
+    h1 { text-align: center; color: #2c1a0e; font-size: 22px; margin-bottom: 4px; letter-spacing: 1px; }
+    p.sub { text-align: center; color: #b8924a; font-size: 12px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
+
+    .download-btn {
+      display: block;
+      margin: 0 auto 20px;
+      background: #2c1a0e;
+      color: #b8924a;
+      border: none;
+      padding: 10px 28px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    .download-btn:hover { background: #4a2e1a; }
+
+    .chart-wrap {
+      background: white;
+      border: 1px solid #b8924a;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+
+    .mermaid { display: flex; justify-content: center; }
+  </style>
+</head>
+<body>
+
+<h1>Andaya's Native Products</h1>
+<p class="sub">System Flowchart</p>
+
+<button class="download-btn" onclick="downloadPNG()">&#11015; Save as PNG</button>
+
+<div class="chart-wrap">
+  <div class="mermaid">
+graph TD
+    classDef startEnd fill:#2c1a0e,stroke:#2c1a0e,color:#f5f0e8
+    classDef process fill:#ffffff,stroke:#b8924a,stroke-width:2px,color:#2c1a0e
+    classDef inputOutput fill:#e8f5e9,stroke:#6b7c5a,stroke-width:2px,color:#2c1a0e
+    classDef decision fill:#fef3c7,stroke:#b8924a,stroke-width:2px,color:#2c1a0e
+    classDef database fill:#f2f2f2,stroke:#888,stroke-width:2px,color:#2c1a0e
+
+    subgraph Public_and_Auth [PUBLIC AND AUTHENTICATION]
+        A([START]) --> B[Landing Page]
+        B --> B1[About Us Section]
+        B --> B2[Services Section]
+        B --> C[LOGIN PAGE]
+        C --> C1[/Input Email and Password/]
+        C1 --> D{Credentials Valid?}
+        D -- NO --> D1[/Error Message/]
+        D1 --> C
+        D -- YES --> E{Check Role}
+        C --> F[No Account Yet?]
+        F --> G[REGISTER PAGE]
+        G --> G1[/Input Name, Email, Password/]
+        G1 --> H{Email Unique?}
+        H -- NO --> H1[/Error Message/]
+        H1 --> G
+        H -- YES --> I[Create User Record - role=customer]
+        I --> J[Auto Login]
+    end
+
+    E -- ADMIN --> K[admin dashboard]
+    E -- CUSTOMER --> L[customer dashboard]
+    J --> L
+
+    subgraph Admin_Side [ADMIN SIDE]
+        K[admin dashboard] --> K1[/Stats and Alerts/]
+        K --> K2[PRODUCTS - Search, Filter, Add, Edit, Delete]
+        K --> K3[CATEGORIES - Add New]
+        K --> K4[INVENTORY - Stock Logic]
+        K --> K5[ORDERS - Update Status]
+        K --> K6[PURCHASES AND SUPPLIERS]
+        K --> K7[INVOICES]
+    end
+
+    subgraph Customer_Side [CUSTOMER SIDE]
+        L[customer dashboard] --> L1[/Stats and Recent Orders/]
+        L --> L2[PRODUCTS - Search and Filter]
+        L2 --> M{Action?}
+        M -- Add to Cart --> N[Session Cart]
+        M -- Buy Now --> O[Buy Now Modal]
+        N --> P[CART PAGE]
+        P --> Q[Checkout]
+        O --> Q
+        Q --> R[/Input Payment and Address/]
+        R --> S[Confirm Order]
+    end
+
+    S --> T[Create Order, Items, and Invoice]
+    T --> U[Order Confirmation Page]
+    U --> V{Admin Status Update}
+    V -- Delivered --> W[Mark Invoice as PAID]
+
+    subgraph Database_Schema [DATABASE RELATIONSHIPS]
+        DB1[(users)] --- DB2[(orders)]
+        DB2 --- DB3[(order_items)]
+        DB3 --- DB4[(products)]
+        DB4 --- DB5[(inventory)]
+        DB2 --- DB7[(invoices)]
+        DB8[(suppliers)] --- DB9[(purchases)]
+        DB9 --- DB10[(purchase_items)]
+        DB10 --- DB4
+    end
+
+    class A startEnd
+    class B,B1,B2,C,F,G,I,J,K,K2,K3,K4,K5,K6,K7,L,L2,N,O,P,Q,S,T,U,W process
+    class C1,D1,G1,H1,K1,L1,R inputOutput
+    class D,E,H,M,V decision
+    class DB1,DB2,DB3,DB4,DB5,DB7,DB8,DB9,DB10 database
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#ffffff',
+      primaryBorderColor: '#b8924a',
+      primaryTextColor: '#2c1a0e',
+      lineColor: '#4a2e1a',
+      secondaryColor: '#fef3c7',
+      tertiaryColor: '#e8f5e9',
+      fontFamily: 'Segoe UI, sans-serif',
+      fontSize: '13px'
+    },
+    flowchart: {
+      curve: 'basis',
+      padding: 20,
+      nodeSpacing: 50,
+      rankSpacing: 60,
+      useMaxWidth: true
+    }
+  });
+</script>
+
+<script>
+  function downloadPNG() {
+    html2canvas(document.querySelector('.chart-wrap'), { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'andaya-flowchart.png';
+      a.click();
+    });
+  }
+</script>
+
+</body>
+</html>

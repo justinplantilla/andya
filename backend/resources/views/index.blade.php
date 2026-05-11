@@ -375,7 +375,7 @@
 
       <div class="reveal text-center max-w-xl mx-auto mb-14">
         <p class="text-bark-mid/80 font-sans text-base leading-relaxed font-light">
-          Ang Andaya's Native Products ay isang negosyong nakatuon sa pagpapahalaga at pagpapakalat ng mga tunay na likhain ng Pilipino. Mula sa mga produktong gawa sa natural na materyales hanggang sa mga tradisyonal na pagkain, bawat piraso ay may kwentong nagmumula sa puso ng ating kultura.
+          Ang Andaya's Native Products ay isang negosyong nakatuon sa pagpapahalaga at pagpapakalat ng mga tunay na likhain ng Pilipino. Mula sa mga produktong gawa sa natural na materyales hanggang sa mga tradisyonal na kagamitan at damit, bawat piraso ay may kwentong nagmumula sa puso ng ating kultura.
         </p>
       </div>
 

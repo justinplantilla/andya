@@ -193,6 +193,6 @@ class AuthController extends Controller
 
         return $isAdmin
             ? redirect()->route('login')
-            : redirect()->route('home');
+            : redirect()->route('login');
     }
 }
