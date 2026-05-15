@@ -4,9 +4,6 @@
 @section('page-subtitle', 'Pamahalaan ang mga order ng customers')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
 
 <!-- Filters -->
 <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-3 mb-6">
@@ -50,7 +47,6 @@
           <span class="text-sm font-semibold text-bark">{{ $order->order_number }}</span>
           <span class="text-sm text-bark-mid/50">{{ $order->created_at->format('M d, Y h:i A') }}</span>
         </div>
-        <span class="badge badge-{{ $order->status }}">{{ ucfirst($order->status) }}</span>
       </div>
 
       <!-- Customer + Payment Info -->
@@ -67,6 +63,15 @@
           @if($order->payment_method === 'gcash')
             <span class="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-[9px]">G</span>
             <span>GCash{{ $order->gcash_number ? ' — '.$order->gcash_number : '' }}</span>
+            @if($order->gcash_screenshot)
+              <a href="{{ asset('storage/'.$order->gcash_screenshot) }}" target="_blank"
+                class="ml-2 text-xs text-blue-600 hover:underline flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                View Screenshot
+              </a>
+            @else
+              <span class="ml-2 text-xs text-rust/60">No screenshot</span>
+            @endif
           @else
             <svg class="w-4 h-4 text-bark-mid/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span>Cash on Delivery</span>
@@ -100,21 +105,60 @@
       </div>
 
       <!-- Order Footer -->
+      @php
+        $steps = ['pending','confirmed','processing','shipped','delivered'];
+        $current = $order->status;
+        $currentIdx = array_search($current, $steps);
+        $nextStatus = ($currentIdx !== false && $currentIdx < count($steps)-1) ? $steps[$currentIdx+1] : null;
+        $statusColors = [
+          'pending'    => 'bg-gold/15 text-gold border-gold/30',
+          'confirmed'  => 'bg-blue-500/10 text-blue-600 border-blue-200',
+          'processing' => 'bg-purple-500/10 text-purple-600 border-purple-200',
+          'shipped'    => 'bg-sky-500/10 text-sky-600 border-sky-200',
+          'delivered'  => 'bg-sage/15 text-sage border-sage/30',
+          'cancelled'  => 'bg-rust/10 text-rust border-rust/20',
+        ];
+        $nextLabels = [
+          'pending'    => 'Confirm',
+          'confirmed'  => 'Process',
+          'processing' => 'Ship',
+          'shipped'    => 'Delivered',
+        ];
+      @endphp
       <div class="flex items-center justify-between px-5 py-3 border-t border-gold/10">
-        <form method="POST" action="{{ route('admin.orders.status', $order) }}" class="flex items-center gap-2">
-          @csrf @method('PUT')
-          <select name="status" class="input-field py-1.5 px-2 text-sm w-40" onchange="this.form.submit()">
-            <option value="pending"    {{ $order->status === 'pending'    ? 'selected' : '' }}>Pending</option>
-            <option value="confirmed"  {{ $order->status === 'confirmed'  ? 'selected' : '' }}>Confirmed</option>
-            <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
-            <option value="shipped"    {{ $order->status === 'shipped'    ? 'selected' : '' }}>Shipped</option>
-            <option value="delivered"  {{ $order->status === 'delivered'  ? 'selected' : '' }}>Delivered</option>
-            <option value="cancelled"  {{ $order->status === 'cancelled'  ? 'selected' : '' }}>Cancelled</option>
-          </select>
-        </form>
+
+        {{-- Left: Status pills --}}
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium {{ $statusColors[$current] ?? 'bg-bark/5 text-bark border-bark/10' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+            {{ ucfirst($current) }}
+          </span>
+          @if($nextStatus)
+            <form method="POST" action="{{ route('admin.orders.status', $order) }}">
+              @csrf @method('PUT')
+              <input type="hidden" name="status" value="{{ $nextStatus }}"/>
+              <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold/30 bg-gold/8 text-bark-mid text-xs font-medium hover:bg-gold/20 transition-all">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                {{ $nextLabels[$current] ?? '' }}
+              </button>
+            </form>
+          @endif
+          @if(!in_array($current, ['delivered','cancelled']))
+            <form method="POST" action="{{ route('admin.orders.status', $order) }}">
+              @csrf @method('PUT')
+              <input type="hidden" name="status" value="cancelled"/>
+              <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-rust/20 bg-rust/5 text-rust text-xs font-medium hover:bg-rust/15 transition-all">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Cancel
+              </button>
+            </form>
+          @endif
+        </div>
+
+        {{-- Right: Print + Total --}}
         <div class="flex items-center gap-4">
-          @if($order->status !== 'cancelled')
-            @if($order->status === 'pending')
+          @if($current !== 'cancelled')
+            @if($current === 'pending')
               <form method="POST" action="{{ route('admin.orders.processPrint', $order) }}" target="_blank">
                 @csrf
                 <button type="submit" class="btn-gold py-2 px-4 text-xs flex items-center gap-1.5">
@@ -123,8 +167,7 @@
                 </button>
               </form>
             @else
-              <a href="{{ route('admin.invoices.receipt', $order->invoice) }}" target="_blank"
-                class="btn-outline py-2 px-4 text-xs flex items-center gap-1.5">
+              <a href="{{ route('admin.invoices.receipt', $order->invoice) }}" target="_blank" class="btn-outline py-2 px-4 text-xs flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                 Print Receipt
               </a>
@@ -135,6 +178,7 @@
             <div class="font-sans text-lg text-bark font-semibold">₱{{ number_format($order->total_amount, 2) }}</div>
           </div>
         </div>
+
       </div>
 
     </div>

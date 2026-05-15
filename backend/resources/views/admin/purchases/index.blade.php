@@ -4,12 +4,6 @@
 @section('page-subtitle', 'Mga biniling produkto mula sa suppliers')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
-@if($errors->any())
-  <div class="mb-4 text-rust text-sm bg-rust/10 py-3 px-4 rounded-lg">{{ $errors->first() }}</div>
-@endif
 
 <form method="GET" action="{{ route('admin.purchases.index') }}" class="flex items-center gap-3 mb-6">
   <input type="text" name="search" value="{{ request('search') }}" placeholder="Maghanap ng purchase #..." class="input-field w-64"/>
@@ -75,14 +69,38 @@
       </div>
 
       <div class="flex items-center justify-between px-5 py-3 border-t border-gold/10">
-        <form method="POST" action="{{ route('admin.purchases.status', $purchase) }}" class="flex items-center gap-2">
-          @csrf @method('PUT')
-          <select name="status" class="input-field py-1.5 px-2 text-xs w-36" onchange="this.form.submit()">
-            <option value="pending"   {{ $purchase->status === 'pending'   ? 'selected' : '' }}>Pending</option>
-            <option value="received"  {{ $purchase->status === 'received'  ? 'selected' : '' }}>Received</option>
-            <option value="cancelled" {{ $purchase->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-          </select>
-        </form>
+        @php
+          $pStatus = $purchase->status;
+          $pColors = [
+            'pending'   => 'bg-gold/15 text-gold border-gold/30',
+            'received'  => 'bg-sage/15 text-sage border-sage/30',
+            'cancelled' => 'bg-rust/10 text-rust border-rust/20',
+          ];
+        @endphp
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium {{ $pColors[$pStatus] ?? 'bg-bark/5 text-bark border-bark/10' }}">
+            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+            {{ ucfirst($pStatus) }}
+          </span>
+          @if($pStatus === 'pending')
+            <form method="POST" action="{{ route('admin.purchases.status', $purchase) }}">
+              @csrf @method('PUT')
+              <input type="hidden" name="status" value="received"/>
+              <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold/30 bg-gold/8 text-bark-mid text-xs font-medium hover:bg-gold/20 transition-all">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Mark Received
+              </button>
+            </form>
+            <form method="POST" action="{{ route('admin.purchases.status', $purchase) }}">
+              @csrf @method('PUT')
+              <input type="hidden" name="status" value="cancelled"/>
+              <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-rust/20 bg-rust/5 text-rust text-xs font-medium hover:bg-rust/15 transition-all">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Cancel
+              </button>
+            </form>
+          @endif
+        </div>
         <div class="text-right">
           <div class="text-xs text-bark-mid/50">Total Cost</div>
           <div class="font-sans text-base text-bark font-semibold">₱{{ number_format($purchase->total_cost, 2) }}</div>

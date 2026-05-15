@@ -4,9 +4,6 @@
 @section('page-subtitle', 'Subaybayan ang stock ng mga produkto')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
 
 <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 p-6">
   <div class="flex items-center justify-between mb-6">

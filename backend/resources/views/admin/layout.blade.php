@@ -203,8 +203,8 @@
       </div>
       <div class="flex items-center gap-3">
         @php
-          $unreadNotifs = \App\Models\Notification::unread()->latest()->take(10)->get();
-          $unreadCount  = $unreadNotifs->count();
+          $allNotifs   = \App\Models\Notification::latest()->take(15)->get();
+          $unreadCount = $allNotifs->where('is_read', false)->count();
         @endphp
 
         <!-- Notification Bell -->
@@ -229,21 +229,22 @@
             </div>
 
             <div class="max-h-80 overflow-y-auto">
-              @forelse($unreadNotifs as $notif)
-                <form method="POST" action="{{ route('admin.notifications.readOne', $notif) }}">
-                  @csrf
-                  <button type="submit" class="w-full text-left px-4 py-3 hover:bg-gold/8 transition-colors border-b border-gold/8 flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gold/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="text-sm font-medium text-bark">{{ $notif->title }}</div>
-                      <div class="text-xs text-bark-mid/60 mt-0.5 leading-relaxed">{{ $notif->message }}</div>
-                      <div class="text-[10px] text-bark-mid/40 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
-                    </div>
+              @forelse($allNotifs as $notif)
+                <button type="button"
+                  onclick="openNotifModal('{{ addslashes($notif->title) }}', '{{ addslashes($notif->message) }}', '{{ $notif->created_at->diffForHumans() }}', {{ $notif->is_read ? 'true' : 'false' }}, '{{ route('admin.notifications.readOne', $notif) }}')"
+                  class="w-full text-left px-4 py-3 hover:bg-gold/8 transition-colors border-b border-gold/8 flex items-start gap-3 {{ $notif->is_read ? 'opacity-50' : '' }}">
+                  <div class="w-8 h-8 rounded-full {{ $notif->is_read ? 'bg-bark/8' : 'bg-gold/15' }} flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 {{ $notif->is_read ? 'text-bark-mid/40' : 'text-gold' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-bark">{{ $notif->title }}</div>
+                    <div class="text-xs text-bark-mid/60 mt-0.5 leading-relaxed">{{ $notif->message }}</div>
+                    <div class="text-[10px] text-bark-mid/40 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
+                  </div>
+                  @if(!$notif->is_read)
                     <div class="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0"></div>
-                  </button>
-                </form>
+                  @endif
+                </button>
               @empty
                 <div class="flex flex-col items-center justify-center py-10 text-center">
                   <svg class="w-8 h-8 text-bark/20 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
@@ -265,6 +266,71 @@
     </main>
   </div>
 
+  <!-- ── TOAST NOTIFICATIONS ── -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+  @if(session('success'))
+  <script>document.addEventListener('DOMContentLoaded',()=>showToast('{{ addslashes(session('success')) }}','success'));</script>
+  @endif
+  @if(session('error'))
+  <script>document.addEventListener('DOMContentLoaded',()=>showToast('{{ addslashes(session('error')) }}','error'));</script>
+  @endif
+  @if(session('password_success'))
+  <script>document.addEventListener('DOMContentLoaded',()=>showToast('{{ addslashes(session('password_success')) }}','success'));</script>
+  @endif
+  @if($errors->any())
+  <script>document.addEventListener('DOMContentLoaded',()=>showToast('{{ addslashes($errors->first()) }}','error'));</script>
+  @endif
+
+  <!-- Notification Detail Modal -->
+  <div id="notif-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-bark/60 backdrop-blur-sm" onclick="closeNotifModal()"></div>
+    <div class="relative bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/20 shadow-2xl w-full max-w-md z-10 p-6">
+      <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
+      <div class="absolute top-3 right-3 w-4 h-4 border-t border-r border-gold/30"></div>
+      <div class="absolute bottom-3 left-3 w-4 h-4 border-b border-l border-gold/30"></div>
+      <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
+      <div class="flex items-start gap-4 mb-4">
+        <div class="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-display text-lg text-bark font-medium" id="notif-modal-title"></h3>
+          <p class="text-[10px] text-bark-mid/40 mt-0.5" id="notif-modal-time"></p>
+        </div>
+        <button onclick="closeNotifModal()" class="text-bark/30 hover:text-bark transition-colors flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <p class="text-sm text-bark-mid/70 leading-relaxed mb-5" id="notif-modal-message"></p>
+      <form method="POST" id="notif-read-form" action="">
+        @csrf
+        <div class="flex gap-3">
+          <button type="button" onclick="closeNotifModal()" class="btn-outline flex-1 justify-center">Close</button>
+          <button type="submit" id="notif-read-btn" class="btn-gold flex-1 justify-center">Mark as Read</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Session Expiry Warning Modal -->
+  <div id="session-warning" class="hidden fixed inset-0 z-[60] flex items-center justify-center">
+    <div class="absolute inset-0 bg-bark/40 backdrop-blur-sm"></div>
+    <div class="relative bg-cream rounded-2xl border border-gold/20 shadow-2xl p-8 w-80 text-center">
+      <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="font-display text-xl text-bark font-medium mb-1">Malapit nang mag-expire</h3>
+      <p class="text-bark-mid/60 text-sm mb-2">Mag-e-expire ang iyong session sa</p>
+      <p class="text-3xl font-display text-rust font-semibold mb-4" id="session-countdown">5:00</p>
+      <p class="text-bark-mid/50 text-xs mb-6">I-click ang "Magpatuloy" para manatiling naka-login.</p>
+      <div class="flex gap-3">
+        <a href="{{ route('logout.get') }}" class="flex-1 btn-outline">Mag-logout</a>
+        <button onclick="extendSession()" class="flex-1 btn-gold justify-center">Magpatuloy</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Logout Confirmation Modal -->
   <div id="logout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
     <div class="absolute inset-0 bg-bark/40 backdrop-blur-sm" onclick="document.getElementById('logout-modal').classList.add('hidden')"></div>
@@ -283,10 +349,104 @@
 
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script>
-    function toggleNotif() {
-      const d = document.getElementById('notif-dropdown');
-      d.classList.toggle('hidden');
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = 'pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl border text-sm font-medium max-w-sm translate-x-full opacity-0 transition-all duration-300 ' +
+        (isSuccess
+          ? 'bg-cream border-sage/30 text-bark'
+          : 'bg-cream border-rust/30 text-bark');
+      toast.innerHTML = `
+        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${ isSuccess ? 'bg-sage/15' : 'bg-rust/10' }">
+          ${ isSuccess
+            ? '<svg class="w-4 h-4 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+            : '<svg class="w-4 h-4 text-rust" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+          }
+        </div>
+        <span class="flex-1">${message}</span>
+        <button onclick="this.closest('[data-toast]').remove()" class="text-bark/30 hover:text-bark transition-colors ml-1">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>`;
+      toast.setAttribute('data-toast', '');
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-x-full', 'opacity-0');
+        });
+      });
+      setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
     }
+
+    // ── SESSION EXPIRY WARNING ──
+    (function () {
+      const SESSION_MINUTES = 120;
+      const WARN_BEFORE_MINUTES = 5;
+      const warnAt = (SESSION_MINUTES - WARN_BEFORE_MINUTES) * 60 * 1000;
+      const expireAt = SESSION_MINUTES * 60 * 1000;
+
+      let warnTimer = setTimeout(function () {
+        document.getElementById('session-warning').classList.remove('hidden');
+        startCountdown(WARN_BEFORE_MINUTES * 60);
+      }, warnAt);
+
+      let expireTimer = setTimeout(function () {
+        window.location.href = '{{ route("logout.get") }}';
+      }, expireAt);
+
+      function startCountdown(seconds) {
+        const el = document.getElementById('session-countdown');
+        const interval = setInterval(function () {
+          seconds--;
+          const m = Math.floor(seconds / 60);
+          const s = seconds % 60;
+          el.textContent = m + ':' + String(s).padStart(2, '0');
+          if (seconds <= 0) clearInterval(interval);
+        }, 1000);
+      }
+
+      window.extendSession = function () {
+        clearTimeout(warnTimer);
+        clearTimeout(expireTimer);
+        document.getElementById('session-warning').classList.add('hidden');
+        fetch(window.location.href, { method: 'GET', credentials: 'same-origin' });
+        warnTimer = setTimeout(function () {
+          document.getElementById('session-warning').classList.remove('hidden');
+          startCountdown(WARN_BEFORE_MINUTES * 60);
+        }, warnAt);
+        expireTimer = setTimeout(function () {
+          window.location.href = '{{ route("logout.get") }}';
+        }, expireAt);
+      };
+    })();
+
+    function toggleNotif() {
+      document.getElementById('notif-dropdown').classList.toggle('hidden');
+    }
+
+    function openNotifModal(title, message, time, isRead, actionUrl) {
+      document.getElementById('notif-modal-title').textContent   = title;
+      document.getElementById('notif-modal-message').textContent = message;
+      document.getElementById('notif-modal-time').textContent    = time;
+      document.getElementById('notif-read-form').action          = actionUrl;
+      const btn = document.getElementById('notif-read-btn');
+      if (isRead) { btn.textContent = 'Already Read'; btn.disabled = true; btn.classList.add('opacity-50'); }
+      else        { btn.textContent = 'Mark as Read'; btn.disabled = false; btn.classList.remove('opacity-50'); }
+      document.getElementById('notif-dropdown').classList.add('hidden');
+      document.getElementById('notif-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeNotifModal() {
+      document.getElementById('notif-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeNotifModal(); });
+
     document.addEventListener('click', function(e) {
       const wrapper = document.getElementById('notif-wrapper');
       if (wrapper && !wrapper.contains(e.target)) {

@@ -4,10 +4,6 @@
 @section('page-subtitle', 'Detalye ng iyong order')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
-
 <div class="max-w-2xl flex flex-col gap-6">
 
   <!-- Order Status Card -->
@@ -68,13 +64,8 @@
       <div>
         <div class="text-xs text-bark-mid/50 mb-0.5">Payment Method</div>
         <div class="flex items-center gap-1.5">
-          @if($order->payment_method === 'gcash')
-            <span class="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-[9px]">G</span>
-            <span class="text-sm text-bark">GCash {{ $order->gcash_number ? '('.$order->gcash_number.')' : '' }}</span>
-          @else
-            <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-            <span class="text-sm text-bark">Cash on Delivery</span>
-          @endif
+          <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <span class="text-sm text-bark">Cash on Delivery</span>
         </div>
       </div>
       <div>
@@ -149,10 +140,69 @@
       </button>
     @endif
 
+    @if(in_array($order->status, ['delivered','cancelled']))
+      <form method="POST" action="{{ route('customer.orders.reorder', $order->id) }}">
+        @csrf
+        <button type="submit" class="btn-outline flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Reorder
+        </button>
+      </form>
+    @endif
+
     <a href="{{ route('customer.products') }}" class="btn-gold ml-auto flex items-center gap-2">
       Continue Shopping
     </a>
   </div>
+
+  @if($order->status === 'delivered')
+  <!-- Reviews -->
+  <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 p-6">
+    <h2 class="font-display text-xl text-bark font-medium mb-4">I-rate ang mga Produkto</h2>
+    @if(session('success'))
+      <div class="mb-4 text-sage text-sm bg-sage/10 py-2 px-4 rounded-lg">{{ session('success') }}</div>
+    @endif
+    <div class="flex flex-col gap-6">
+      @foreach($order->orderItems as $item)
+        @php
+          $existing = \App\Models\Review::where('user_id', auth()->id())
+            ->where('product_id', $item->product_id)
+            ->where('order_id', $order->id)->first();
+        @endphp
+        <div class="pb-6 border-b border-gold/10 last:border-0 last:pb-0">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-bark/5 overflow-hidden flex-shrink-0">
+              @if($item->product->image)
+                <img src="{{ asset('storage/'.$item->product->image) }}" class="w-full h-full object-cover"/>
+              @endif
+            </div>
+            <div class="text-sm font-medium text-bark">{{ $item->product->name }}</div>
+            @if($existing)
+              <span class="ml-auto text-xs text-sage bg-sage/10 px-2 py-1 rounded-full">Na-review na ✓</span>
+            @endif
+          </div>
+          <form method="POST" action="{{ route('customer.orders.review', $order->id) }}">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $item->product_id }}">
+            <div class="flex items-center gap-1 mb-3" id="stars-{{ $item->product_id }}">
+              @for($s = 1; $s <= 5; $s++)
+                <button type="button" onclick="setRating({{ $item->product_id }}, {{ $s }})"
+                  class="star-btn text-2xl transition-colors {{ $existing && $existing->rating >= $s ? 'text-gold' : 'text-bark/20' }}"
+                  data-product="{{ $item->product_id }}" data-value="{{ $s }}">★</button>
+              @endfor
+              <input type="hidden" name="rating" id="rating-{{ $item->product_id }}" value="{{ $existing->rating ?? '' }}" required>
+            </div>
+            <textarea name="comment" rows="2" placeholder="Isulat ang iyong review (optional)..."
+              class="input-field text-sm resize-none mb-3">{{ $existing->comment ?? '' }}</textarea>
+            <button type="submit" class="btn-gold text-xs py-2 px-4">
+              {{ $existing ? 'I-update ang Review' : 'I-submit ang Review' }}
+            </button>
+          </form>
+        </div>
+      @endforeach
+    </div>
+  </div>
+  @endif
 </div>
 
 <!-- Cancel Modal -->
@@ -172,6 +222,18 @@
     <p class="text-bark-mid/50 text-xs mb-6">Hindi na ito mababago pagkatapos ma-cancel.</p>
     <form method="POST" action="{{ route('customer.orders.cancel', $order->id) }}">
       @csrf @method('PUT')
+      <div class="mb-4 text-left">
+        <label class="text-xs tracking-[0.15em] uppercase text-bark-mid/70 font-medium block mb-2">Dahilan ng Cancellation</label>
+        <select name="cancel_reason" required class="w-full bg-white border border-bark/15 rounded-md px-3 py-2.5 text-sm text-bark focus:outline-none focus:border-gold/60">
+          <option value="">Pumili ng dahilan...</option>
+          <option value="Changed my mind">Nagbago ang isip ko</option>
+          <option value="Wrong item ordered">Mali ang na-order na item</option>
+          <option value="Found a better price">Mas mura sa ibang lugar</option>
+          <option value="Ordered by mistake">Na-order nang hindi sinasadya</option>
+          <option value="Delivery takes too long">Masyadong matagal ang delivery</option>
+          <option value="Other">Iba pa</option>
+        </select>
+      </div>
       <div class="flex gap-3">
         <button type="button" onclick="document.getElementById('cancel-modal').classList.add('hidden'); document.getElementById('cancel-modal').classList.remove('flex'); document.body.style.overflow='';" class="btn-outline flex-1 justify-center">Bumalik</button>
         <button type="submit" class="flex-1 bg-rust text-cream text-sm font-medium py-2.5 px-4 rounded-md hover:bg-rust/80 transition-colors">I-cancel</button>
@@ -180,3 +242,15 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+  function setRating(productId, value) {
+    document.getElementById('rating-' + productId).value = value;
+    document.querySelectorAll('[data-product="' + productId + '"]').forEach(btn => {
+      btn.classList.toggle('text-gold', btn.dataset.value <= value);
+      btn.classList.toggle('text-bark/20', btn.dataset.value > value);
+    });
+  }
+</script>
+@endpush

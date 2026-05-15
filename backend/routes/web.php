@@ -82,10 +82,13 @@ Route::middleware(['auth', 'customer'])->prefix('customer')->name('customer.')->
     Route::post('/orders/direct', [\App\Http\Controllers\Customer\CustomerController::class, 'directOrder'])->name('orders.direct');
     Route::get('/orders/{id}', [\App\Http\Controllers\Customer\CustomerController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{id}/cancel', [\App\Http\Controllers\Customer\CustomerController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::post('/orders/{id}/reorder', [\App\Http\Controllers\Customer\CustomerController::class, 'reorder'])->name('orders.reorder');
+    Route::post('/orders/{order}/review', [\App\Http\Controllers\Customer\CustomerController::class, 'storeReview'])->name('orders.review');
     Route::get('/orders/{id}/confirmation', [\App\Http\Controllers\Customer\CustomerController::class, 'showConfirmation'])->name('orders.confirmation');
     Route::get('/profile', [\App\Http\Controllers\Customer\CustomerController::class, 'profile'])->name('profile');
     Route::put('/profile', [\App\Http\Controllers\Customer\CustomerController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\Customer\CustomerController::class, 'updatePassword'])->name('profile.password');
     Route::post('/notifications/read', [\App\Http\Controllers\Customer\CustomerController::class, 'markNotificationsRead'])->name('notifications.read');
     Route::post('/notifications/{notification}/read', [\App\Http\Controllers\Customer\CustomerController::class, 'markOneNotificationRead'])->name('notifications.readOne');
+    Route::post('/chatbot', [\App\Http\Controllers\Customer\CustomerController::class, 'chatbot'])->name('chatbot');
 });

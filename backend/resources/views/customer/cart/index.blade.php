@@ -17,7 +17,7 @@
     <a href="{{ route('customer.products') }}" class="btn-gold">Mag-browse ng Products</a>
   </div>
 @else
-<form method="POST" action="{{ route('customer.orders.store') }}" id="checkout-form">
+<form method="POST" action="{{ route('customer.orders.store') }}" id="checkout-form" enctype="multipart/form-data">
   @csrf
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -56,15 +56,11 @@
 
           <!-- Quantity Controls -->
           <div class="flex items-center gap-2">
-            <form method="POST" action="{{ route('customer.cart.update') }}" class="flex items-center gap-1">
-              @csrf
-              <input type="hidden" name="product_id" value="{{ $id }}"/>
-              <button type="submit" name="quantity" value="{{ max(1, $item['quantity'] - 1) }}"
-                class="w-7 h-7 rounded-full border border-bark/15 flex items-center justify-center text-bark-mid/60 hover:border-gold hover:text-gold transition-all text-sm font-medium">−</button>
-              <span class="w-8 text-center text-sm text-bark font-medium">{{ $item['quantity'] }}</span>
-              <button type="submit" name="quantity" value="{{ $item['quantity'] + 1 }}"
-                class="w-7 h-7 rounded-full border border-bark/15 flex items-center justify-center text-bark-mid/60 hover:border-gold hover:text-gold transition-all text-sm font-medium">+</button>
-            </form>
+            <button type="button" onclick="updateQty('{{ $id }}', {{ max(1, $item['quantity'] - 1) }}, this)"
+              class="w-7 h-7 rounded-full border border-bark/15 flex items-center justify-center text-bark-mid/60 hover:border-gold hover:text-gold transition-all text-sm font-medium">−</button>
+            <span class="w-8 text-center text-sm text-bark font-medium qty-display" data-id="{{ $id }}">{{ $item['quantity'] }}</span>
+            <button type="button" onclick="updateQty('{{ $id }}', {{ $item['quantity'] + 1 }}, this)"
+              class="w-7 h-7 rounded-full border border-bark/15 flex items-center justify-center text-bark-mid/60 hover:border-gold hover:text-gold transition-all text-sm font-medium">+</button>
           </div>
 
           <!-- Subtotal -->
@@ -73,13 +69,9 @@
           </div>
 
           <!-- Remove -->
-          <form method="POST" action="{{ route('customer.cart.remove') }}">
-            @csrf
-            <input type="hidden" name="product_id" value="{{ $id }}"/>
-            <button type="submit" class="text-bark/20 hover:text-rust transition-colors ml-1">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </form>
+          <button type="button" onclick="removeItem('{{ $id }}', this)" class="text-bark/20 hover:text-rust transition-colors ml-1">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
 
         </div>
         @endforeach
@@ -109,51 +101,20 @@
         </div>
       </div>
 
-      <!-- Payment Method -->
-      <div class="flex flex-col gap-2 mb-4">
-        <label class="text-xs tracking-widests uppercase text-bark-mid/60 font-medium">Payment Method</label>
-        <div class="grid grid-cols-2 gap-3">
-          <label class="cursor-pointer" onclick="selectCartPayment('cod', this)">
-            <input type="radio" name="payment_method" value="cod" class="hidden" checked/>
-            <div id="cart-pay-cod" class="border-2 border-gold bg-gold/10 rounded-xl p-3 flex items-center gap-2 transition-all">
-              <div class="w-8 h-8 rounded-full bg-bark/10 flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-              </div>
-              <div>
-                <div class="text-xs font-semibold text-bark">Cash on Delivery</div>
-                <div class="text-[10px] text-bark-mid/50">Bayad sa pagdating</div>
-              </div>
-            </div>
-          </label>
-          <label class="cursor-pointer" onclick="selectCartPayment('gcash', this)">
-            <input type="radio" name="payment_method" value="gcash" class="hidden"/>
-            <div id="cart-pay-gcash" class="border-2 border-transparent bg-bark/5 rounded-xl p-3 flex items-center gap-2 transition-all">
-              <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-blue-600 font-bold text-xs">G</span>
-              </div>
-              <div>
-                <div class="text-xs font-semibold text-bark">GCash</div>
-                <div class="text-[10px] text-bark-mid/50">Online payment</div>
-              </div>
-            </div>
-          </label>
-        </div>
-        <div id="cart-gcash-field" class="hidden flex flex-col gap-1.5 mt-1">
-          <label class="text-xs tracking-widest uppercase text-bark-mid/60 font-medium">GCash Number</label>
-          <input type="text" name="gcash_number" class="input-field" placeholder="09XX XXX XXXX" maxlength="11"/>
-          @if($gcash_number)
-          <div class="flex items-center gap-2 bg-blue-500/5 border border-blue-500/20 rounded-lg p-3 mt-1">
-            <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-              <span class="text-blue-600 font-bold text-xs">G</span>
+        <!-- Payment Method -->
+        <div class="flex flex-col gap-2">
+          <label class="text-xs tracking-widests uppercase text-bark-mid/60 font-medium">Payment Method</label>
+          <div class="bg-bark/5 rounded-xl p-3 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-bark/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
             <div>
-              <div class="text-[10px] text-bark-mid/50 uppercase tracking-widest">Ipadala sa GCash number na ito</div>
-              <div class="text-sm text-bark font-semibold">{{ $gcash_number }}</div>
+              <div class="text-xs font-semibold text-bark">Cash on Delivery</div>
+              <div class="text-[10px] text-bark-mid/50">Bayad sa pagdating</div>
             </div>
           </div>
-          @endif
+          <input type="hidden" name="payment_method" value="cod"/>
         </div>
-      </div>
 
       <!-- Shipping Address -->
       <div class="flex flex-col gap-2 mb-4">
@@ -194,9 +155,9 @@
       </div>
 
       <!-- Checkout Button -->
-      <button type="submit" id="checkout-btn" disabled
+      <button type="button" id="checkout-btn" disabled
         class="w-full btn-gold justify-center opacity-50 cursor-not-allowed transition-all"
-        onclick="return validateCheckout()">
+        onclick="showCheckoutConfirm()">
         Mag-Checkout
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
       </button>
@@ -257,13 +218,36 @@
     updateSummary();
   });
 
-  function validateCheckout() {
+  function showCheckoutConfirm() {
     const selected = document.querySelectorAll('.item-checkbox:checked');
-    if (selected.length === 0) {
-      alert('Pumili ng kahit isang item para mag-checkout.');
-      return false;
-    }
-    return true;
+    if (selected.length === 0) return;
+
+    const itemsEl = document.getElementById('confirm-checkout-items');
+    itemsEl.innerHTML = '';
+    selected.forEach(cb => {
+      const row  = cb.closest('.cart-item');
+      const name = row.querySelector('.font-medium.text-sm.text-bark').textContent.trim();
+      const qty  = parseInt(row.querySelector('.qty-display').textContent);
+      const price= parseFloat(row.dataset.price);
+      const sub  = (price * qty).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+      const div  = document.createElement('div');
+      div.className = 'flex items-center justify-between gap-2 py-1.5 border-b border-gold/10 last:border-0';
+      div.innerHTML = `<span class="text-sm text-bark font-medium truncate flex-1">${name}</span><span class="text-xs text-bark-mid/60 flex-shrink-0">x${qty}</span><span class="text-sm text-bark font-semibold flex-shrink-0">₱${sub}</span>`;
+      itemsEl.appendChild(div);
+    });
+
+    document.getElementById('confirm-checkout-total').textContent = totalEl.textContent;
+    const m = document.getElementById('checkout-confirm-modal');
+    m.classList.remove('hidden');
+    m.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideCheckoutConfirm() {
+    const m = document.getElementById('checkout-confirm-modal');
+    m.classList.add('hidden');
+    m.classList.remove('flex');
+    document.body.style.overflow = '';
   }
 
   function selectCartPayment(method, label) {
@@ -293,6 +277,41 @@
 
   // Init
   updateSummary();
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '{{ csrf_token() }}';
+
+  function updateQty(productId, newQty, btn) {
+    fetch('{{ route("customer.cart.update") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+      body: JSON.stringify({ product_id: productId, quantity: newQty })
+    }).then(() => {
+      const row = btn.closest('.cart-item');
+      const qtyEl = row.querySelector('.qty-display');
+      qtyEl.textContent = newQty;
+      const btns = row.querySelectorAll('button[onclick]');
+      btns[0].setAttribute('onclick', `updateQty('${productId}', ${Math.max(1, newQty - 1)}, this)`);
+      btns[1].setAttribute('onclick', `updateQty('${productId}', ${newQty + 1}, this)`);
+      updateSummary();
+      showToast('Na-update ang quantity.', 'success');
+    }).catch(() => showToast('Hindi na-update. Subukan ulit.', 'error'));
+  }
+
+  function removeItem(productId, btn) {
+    fetch('{{ route("customer.cart.remove") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
+      body: JSON.stringify({ product_id: productId })
+    }).then(() => {
+      const row = btn.closest('.cart-item');
+      const cb = row.querySelector('.item-checkbox');
+      if (cb) cb.checked = false;
+      row.remove();
+      updateSummary();
+      showToast('Natanggal ang item sa cart.', 'success');
+      if (document.querySelectorAll('.cart-item').length === 0) location.reload();
+    }).catch(() => showToast('Hindi natanggal. Subukan ulit.', 'error'));
+  }
 
   // Address change logic
   const changeBtn  = document.getElementById('change-address-btn');
@@ -335,5 +354,49 @@
       editDiv.classList.add('hidden');
     });
   }
+
+  // GCash screenshot preview
+  const screenshotInput = document.getElementById('cart-gcash-screenshot');
+  if (screenshotInput) {
+    screenshotInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('cart-screenshot-img').src = e.target.result;
+          document.getElementById('cart-screenshot-preview').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCheckoutConfirm(); });
 </script>
+<!-- Checkout Confirmation Modal -->
+<div id="checkout-confirm-modal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+  <div class="absolute inset-0 bg-bark/60 backdrop-blur-sm" onclick="hideCheckoutConfirm()"></div>
+  <div class="relative bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/20 shadow-2xl w-full max-w-md z-10 p-6">
+    <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
+    <div class="absolute top-3 right-3 w-4 h-4 border-t border-r border-gold/30"></div>
+    <div class="absolute bottom-3 left-3 w-4 h-4 border-b border-l border-gold/30"></div>
+    <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
+    <div class="w-14 h-14 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <h2 class="font-display text-xl text-bark font-medium mb-3">Kumpirmahin ang Checkout?</h2>
+    <div id="confirm-checkout-items" class="text-left flex flex-col gap-2 mb-4 max-h-48 overflow-y-auto"></div>
+    <div class="flex justify-between text-sm border-t border-gold/15 pt-3 mb-5">
+      <span class="text-bark-mid/60">Kabuuan</span>
+      <span class="font-semibold text-gold" id="confirm-checkout-total"></span>
+    </div>
+    <div class="flex gap-3">
+      <button type="button" onclick="hideCheckoutConfirm()" class="btn-outline flex-1 justify-center">Bumalik</button>
+      <button type="button" onclick="document.getElementById('checkout-form').submit()" class="btn-gold flex-1 justify-center">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        I-order Na
+      </button>
+    </div>
+  </div>
+</div>
+
 @endsection

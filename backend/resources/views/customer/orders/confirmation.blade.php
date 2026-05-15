@@ -33,21 +33,13 @@
         <span class="text-xs tracking-widest uppercase text-bark-mid/50 font-medium">Invoice Number</span>
         <span class="text-sm text-bark font-semibold">{{ $order->invoice->invoice_number ?? '—' }}</span>
       </div>
-      <div class="flex flex-col gap-1">
-        <span class="text-xs tracking-widest uppercase text-bark-mid/50 font-medium">Payment Method</span>
-        <div class="flex items-center gap-2">
-          @if($order->payment_method === 'gcash')
-            <span class="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-[10px]">G</span>
-            <span class="text-sm text-bark font-medium">GCash</span>
-            @if($order->gcash_number)
-              <span class="text-xs text-bark-mid/50">({{ $order->gcash_number }})</span>
-            @endif
-          @else
+        <div class="flex flex-col gap-1">
+          <span class="text-xs tracking-widest uppercase text-bark-mid/50 font-medium">Payment Method</span>
+          <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="text-sm text-bark font-medium">Cash on Delivery</span>
-          @endif
+          </div>
         </div>
-      </div>
       <div class="flex flex-col gap-1">
         <span class="text-xs tracking-widest uppercase text-bark-mid/50 font-medium">Status</span>
         <span class="badge badge-pending w-fit">{{ ucfirst($order->status) }}</span>

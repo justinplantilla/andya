@@ -4,23 +4,6 @@
 @section('page-subtitle', 'I-browse ang mga available na produkto')
 
 @section('content')
-<form method="GET" action="{{ route('customer.products') }}" class="flex items-center gap-3 mb-6">
-  <input type="text" name="search" value="{{ request('search') }}" placeholder="Maghanap ng produkto..." class="input-field w-72"/>
-  <select name="category_id" class="input-field w-44" onchange="this.form.submit()">
-    <option value="">Lahat ng Category</option>
-    @foreach($categories as $category)
-      <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-    @endforeach
-  </select>
-  @if(request('search') || request('category_id'))
-    <a href="{{ route('customer.products') }}" class="btn-outline">Clear</a>
-  @endif
-</form>
-
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
-
 @if($products->isEmpty())
   <div class="flex flex-col items-center justify-center py-20 text-center">
     <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-4">
@@ -77,6 +60,7 @@
     </div>
     @endforeach
   </div>
+  <div class="mt-6">{{ $products->appends(request()->query())->links() }}</div>
 @endif
 
 <!-- ───── BUY NOW MODAL ───── -->
@@ -96,7 +80,7 @@
       </button>
     </div>
 
-    <form method="POST" action="{{ route('customer.orders.direct') }}" id="buy-now-form" class="flex flex-col flex-1 min-h-0">
+    <form method="POST" action="{{ route('customer.orders.direct') }}" id="buy-now-form" class="flex flex-col flex-1 min-h-0" enctype="multipart/form-data">
       @csrf
       <input type="hidden" name="product_id" id="modal-product-id"/>
       <input type="hidden" name="quantity" id="modal-quantity-input" value="1"/>
@@ -137,47 +121,16 @@
         <!-- Payment Method -->
         <div class="flex flex-col gap-2">
           <label class="text-xs tracking-widest uppercase text-bark-mid/60 font-medium">Payment Method</label>
-          <div class="grid grid-cols-2 gap-2">
-            <label class="payment-option cursor-pointer" onclick="selectPayment('cod', this)">
-              <input type="radio" name="payment_method" value="cod" class="hidden" checked/>
-              <div class="payment-card border-2 border-gold bg-gold/10 rounded-xl p-2.5 flex items-center gap-2 transition-all">
-                <div class="w-8 h-8 rounded-full bg-bark/10 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
-                <div>
-                  <div class="text-xs font-semibold text-bark">Cash on Delivery</div>
-                  <div class="text-[10px] text-bark-mid/50">Bayad sa pagdating</div>
-                </div>
-              </div>
-            </label>
-            <label class="payment-option cursor-pointer" onclick="selectPayment('gcash', this)">
-              <input type="radio" name="payment_method" value="gcash" class="hidden"/>
-              <div class="payment-card border-2 border-transparent bg-bark/5 rounded-xl p-2.5 flex items-center gap-2 transition-all">
-                <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                  <span class="text-blue-600 font-bold text-xs">G</span>
-                </div>
-                <div>
-                  <div class="text-xs font-semibold text-bark">GCash</div>
-                  <div class="text-[10px] text-bark-mid/50">Online payment</div>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div id="modal-gcash-field" class="hidden flex-col gap-1.5">
-            <label class="text-xs tracking-widest uppercase text-bark-mid/60 font-medium">GCash Number</label>
-            <input type="text" name="gcash_number" id="modal-gcash-number" class="input-field" placeholder="09XX XXX XXXX" maxlength="11"/>
-            @if($gcash_number ?? null)
-            <div class="flex items-center gap-2 bg-blue-500/5 border border-blue-500/20 rounded-lg p-3">
-              <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                <span class="text-blue-600 font-bold text-xs">G</span>
-              </div>
-              <div>
-                <div class="text-[10px] text-bark-mid/50 uppercase tracking-widest">Ipadala sa GCash number na ito</div>
-                <div class="text-sm text-bark font-semibold">{{ $gcash_number }}</div>
-              </div>
+          <div class="bg-bark/5 border-2 border-gold rounded-xl p-2.5 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-bark/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-bark-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
-            @endif
+            <div>
+              <div class="text-xs font-semibold text-bark">Cash on Delivery</div>
+              <div class="text-[10px] text-bark-mid/50">Bayad sa pagdating</div>
+            </div>
           </div>
+          <input type="hidden" name="payment_method" value="cod"/>
         </div>
 
         <!-- Shipping Address -->
@@ -222,15 +175,34 @@
 </div>
 
 <!-- ───── ORDER CONFIRMATION MODAL ───── -->
-<div id="confirm-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center">
+<div id="confirm-modal" class="hidden fixed inset-0 z-[60] items-center justify-center p-4">
   <div class="absolute inset-0 bg-bark/50 backdrop-blur-sm" onclick="hideConfirm()"></div>
-  <div class="relative bg-cream rounded-2xl border border-gold/20 shadow-2xl p-8 w-80 text-center">
-    <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-4">
-      <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+  <div class="relative bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/20 shadow-2xl w-full max-w-md z-10 p-6">
+    <div class="absolute top-3 left-3 w-4 h-4 border-t border-l border-gold/30"></div>
+    <div class="absolute top-3 right-3 w-4 h-4 border-t border-r border-gold/30"></div>
+    <div class="absolute bottom-3 left-3 w-4 h-4 border-b border-l border-gold/30"></div>
+    <div class="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-gold/30"></div>
+    <h3 class="font-display text-xl text-bark font-medium mb-4">Kumpirmahin ang Order?</h3>
+    <!-- Product detail row -->
+    <div class="flex items-center gap-4 p-3 bg-white/50 rounded-xl border border-gold/15 mb-4">
+      <div class="w-14 h-14 rounded-lg bg-white flex-shrink-0 overflow-hidden flex items-center justify-center p-1">
+        <img id="confirm-image" src="" class="w-full h-full object-contain hidden"/>
+        <svg id="confirm-image-placeholder" class="w-6 h-6 text-bark/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10px] text-gold tracking-widest uppercase mb-0.5" id="confirm-category"></div>
+        <div class="text-sm text-bark font-semibold leading-tight" id="confirm-name"></div>
+        <div class="text-xs text-bark-mid/50 mt-0.5" id="confirm-unit-price"></div>
+      </div>
+      <div class="text-right flex-shrink-0">
+        <div class="text-xs text-bark-mid/50">Qty</div>
+        <div class="text-sm text-bark font-semibold" id="confirm-qty"></div>
+      </div>
     </div>
-    <h3 class="font-display text-xl text-bark font-medium mb-1">Kumpirmahin ang Order?</h3>
-    <p class="text-bark-mid/60 text-sm mb-1">Produkto: <span class="font-semibold text-bark" id="confirm-name"></span></p>
-    <p class="text-bark-mid/60 text-sm mb-6">Kabuuan: <span class="font-semibold text-gold" id="confirm-total"></span></p>
+    <div class="flex justify-between text-sm border-t border-gold/15 pt-3 mb-5">
+      <span class="text-bark-mid/60">Kabuuan</span>
+      <span class="font-semibold text-gold" id="confirm-total"></span>
+    </div>
     <div class="flex gap-3">
       <button onclick="hideConfirm()" class="flex-1 btn-outline">Bumalik</button>
       <button onclick="document.getElementById('buy-now-form').submit()" class="flex-1 btn-gold justify-center">I-order Na</button>
@@ -241,25 +213,7 @@
 <script>
   let modalPrice = 0, modalMaxQty = 0, modalQty = 1;
 
-  function selectPayment(method, label) {
-    document.querySelectorAll('#buy-now-modal .payment-card').forEach(c => {
-      c.classList.remove('border-gold', 'bg-gold/10');
-      c.classList.add('border-transparent', 'bg-bark/5');
-    });
-    label.querySelector('.payment-card').classList.add('border-gold', 'bg-gold/10');
-    label.querySelector('.payment-card').classList.remove('border-transparent', 'bg-bark/5');
-    label.querySelector('input[type=radio]').checked = true;
-    const gcashField = document.getElementById('modal-gcash-field');
-    if (method === 'gcash') {
-      gcashField.classList.remove('hidden');
-      gcashField.classList.add('flex');
-      document.getElementById('modal-gcash-number').required = true;
-    } else {
-      gcashField.classList.add('hidden');
-      gcashField.classList.remove('flex');
-      document.getElementById('modal-gcash-number').required = false;
-    }
-  }
+  function selectPayment(method, label) {}
 
   function openBuyNow(id, name, price, unit, image, maxQty, category) {
     modalPrice = price; modalMaxQty = maxQty; modalQty = 1;
@@ -276,10 +230,6 @@
     const ph  = document.getElementById('modal-image-placeholder');
     if (image) { img.src = image; img.classList.remove('hidden'); ph.classList.add('hidden'); }
     else        { img.classList.add('hidden'); ph.classList.remove('hidden'); }
-
-    // Reset payment to COD
-    const firstOpt = document.querySelector('#buy-now-modal .payment-option');
-    if (firstOpt) selectPayment('cod', firstOpt);
 
     const modal = document.getElementById('buy-now-modal');
     modal.classList.remove('hidden');
@@ -331,13 +281,30 @@
   }
 
   function showConfirm() {
-    document.getElementById('confirm-name').textContent  = document.getElementById('modal-name').textContent;
-    document.getElementById('confirm-total').textContent = document.getElementById('modal-total').textContent;
-    document.getElementById('confirm-modal').classList.remove('hidden');
+    document.getElementById('confirm-name').textContent      = document.getElementById('modal-name').textContent;
+    document.getElementById('confirm-category').textContent  = document.getElementById('modal-category').textContent;
+    document.getElementById('confirm-qty').textContent       = modalQty;
+    document.getElementById('confirm-unit-price').textContent= '₱' + modalPrice.toLocaleString('en-PH', {minimumFractionDigits:2}) + ' / unit';
+    document.getElementById('confirm-total').textContent     = document.getElementById('modal-total').textContent;
+
+    const img = document.getElementById('modal-image');
+    const cImg = document.getElementById('confirm-image');
+    const cPh  = document.getElementById('confirm-image-placeholder');
+    if (img.src && !img.classList.contains('hidden')) {
+      cImg.src = img.src; cImg.classList.remove('hidden'); cPh.classList.add('hidden');
+    } else {
+      cImg.classList.add('hidden'); cPh.classList.remove('hidden');
+    }
+
+    const m = document.getElementById('confirm-modal');
+    m.classList.remove('hidden');
+    m.classList.add('flex');
   }
 
   function hideConfirm() {
-    document.getElementById('confirm-modal').classList.add('hidden');
+    const m = document.getElementById('confirm-modal');
+    m.classList.add('hidden');
+    m.classList.remove('flex');
   }
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeBuyNow(); hideConfirm(); } });

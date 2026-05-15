@@ -4,9 +4,6 @@
 @section('page-subtitle', 'Mga invoice ng mga transaksyon')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
 <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 p-6">
   <form method="GET" action="{{ route('admin.invoices.index') }}" class="flex items-center gap-3 mb-6">
     <input type="text" name="search" value="{{ request('search') }}" placeholder="Maghanap ng invoice #..." class="input-field w-64"/>

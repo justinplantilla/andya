@@ -4,9 +4,6 @@
 @section('page-subtitle', 'Pamahalaan ang mga produkto')
 
 @section('content')
-@if(session('success'))
-  <div class="mb-4 text-sage text-sm bg-sage/10 py-3 px-4 rounded-lg">{{ session('success') }}</div>
-@endif
 
 <div class="bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/15 p-6">
   <div class="flex items-center justify-between mb-6">
@@ -49,10 +46,8 @@
         <td class="py-3 px-4"><span class="badge badge-{{ $product->status }}">{{ ucfirst($product->status) }}</span></td>
         <td class="py-3 px-4 flex items-center gap-2">
           <a href="{{ route('admin.products.edit', $product) }}" class="btn-outline py-1.5 px-3 text-xs">Edit</a>
-          <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('I-delete ba?')">
-            @csrf @method('DELETE')
-            <button type="submit" class="text-rust/60 hover:text-rust text-xs transition-colors">Delete</button>
-          </form>
+          <button type="button" onclick="confirmDelete({{ $product->id }}, '{{ addslashes($product->name) }}')"
+            class="text-rust/60 hover:text-rust text-xs transition-colors">Delete</button>
         </td>
       </tr>
       @empty
@@ -62,4 +57,39 @@
   </table>
   <div class="mt-4">{{ $products->appends(request()->query())->links() }}</div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-bark/60 backdrop-blur-sm" onclick="closeDelete()"></div>
+  <div class="relative bg-gradient-to-br from-cream to-cream-dark rounded-2xl border border-gold/20 shadow-2xl w-full max-w-sm z-10 p-6 text-center">
+    <div class="w-14 h-14 rounded-full bg-rust/10 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-7 h-7 text-rust" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+    </div>
+    <h2 class="font-display text-xl text-bark font-medium mb-2">I-delete ang Product?</h2>
+    <p class="text-bark-mid/60 text-sm mb-6">"<span id="delete-name" class="font-semibold text-bark"></span>" ay permanenteng matatanggal.</p>
+    <form method="POST" id="delete-form" action="">
+      @csrf @method('DELETE')
+      <div class="flex gap-3">
+        <button type="button" onclick="closeDelete()" class="btn-outline flex-1 justify-center">Kanselahin</button>
+        <button type="submit" class="flex-1 bg-rust text-cream text-sm font-medium py-2.5 px-4 rounded-md hover:bg-rust/80 transition-colors">I-delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(id, name) {
+    document.getElementById('delete-name').textContent = name;
+    document.getElementById('delete-form').action = '/admin/products/' + id;
+    document.getElementById('delete-modal').classList.remove('hidden');
+    document.getElementById('delete-modal').classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDelete() {
+    document.getElementById('delete-modal').classList.add('hidden');
+    document.getElementById('delete-modal').classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDelete(); });
+</script>
 @endsection
